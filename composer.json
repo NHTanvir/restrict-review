@@ -1,0 +1,19 @@
+{
+    "authors": [
+        {
+            "name": "WPPlugines",
+            "email": "hi@WPPlugines.io"
+        }
+    ],
+    "require": {
+        "codexpert/plugin": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "WPPlugines\\Restrict_Reviews\\" : "classes/",
+            "WPPlugines\\Restrict_Reviews\\App\\" : "app/",
+            "WPPlugines\\Restrict_Reviews\\API\\" : "api/"
+        },
+        "files": [ "inc/functions.php" ]
+    }
+}
