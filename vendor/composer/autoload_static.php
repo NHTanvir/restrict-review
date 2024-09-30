@@ -11,24 +11,24 @@ class ComposerStaticInit4cdf9168238e48db3fedf60710d5e10d
     );
 
     public static $prefixLengthsPsr4 = array (
-        'C' => 
+        'W' => 
         array (
-            'Codexpert\\Plugin_Client\\App\\' => 28,
-            'Codexpert\\Plugin_Client\\API\\' => 28,
-            'Codexpert\\Plugin_Client\\' => 24,
+            'WPPlugines\\Restrict_Reviews\\App\\' => 32,
+            'WPPlugines\\Restrict_Reviews\\API\\' => 32,
+            'WPPlugines\\Restrict_Reviews\\' => 28,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'Codexpert\\Plugin_Client\\App\\' => 
+        'WPPlugines\\Restrict_Reviews\\App\\' => 
         array (
             0 => __DIR__ . '/../..' . '/app',
         ),
-        'Codexpert\\Plugin_Client\\API\\' => 
+        'WPPlugines\\Restrict_Reviews\\API\\' => 
         array (
             0 => __DIR__ . '/../..' . '/api',
         ),
-        'Codexpert\\Plugin_Client\\' => 
+        'WPPlugines\\Restrict_Reviews\\' => 
         array (
             0 => __DIR__ . '/../..' . '/classes',
         ),
@@ -43,6 +43,7 @@ class ComposerStaticInit4cdf9168238e48db3fedf60710d5e10d
         'Codexpert\\Plugin\\Setup' => __DIR__ . '/..' . '/codexpert/plugin/src/Setup.php',
         'Codexpert\\Plugin\\Table' => __DIR__ . '/..' . '/codexpert/plugin/src/Table.php',
         'Codexpert\\Plugin\\Widget' => __DIR__ . '/..' . '/codexpert/plugin/src/Widget.php',
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
