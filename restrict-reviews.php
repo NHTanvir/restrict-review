@@ -189,6 +189,8 @@ final class Plugin {
 		 * AJAX related hooks
 		 */
 		$ajax = new App\AJAX( $this->plugin );
+		$ajax->all( 'trade_job_submission', 'trade_job_submission' );
+		
 	}
 
 	/**

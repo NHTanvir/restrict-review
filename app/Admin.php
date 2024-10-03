@@ -46,6 +46,27 @@ class Admin extends Base {
 	 * @since 1.0
 	 */
 	public function install() {
+		global $wpdb;
+	    $table_name = $wpdb->prefix . 'trade_job_submission';
+
+		if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
+		    $charset_collate = $wpdb->get_charset_collate();
+		    
+		    $sql = "CREATE TABLE $table_name (
+				id mediumint(9) NOT NULL AUTO_INCREMENT,
+				name varchar(255) NOT NULL,
+				tradesman_email varchar(255) NOT NULL,
+				subject varchar(255) NOT NULL,
+				field varchar(255) NOT NULL,
+				sub_field varchar(255) DEFAULT NULL,
+				message text NOT NULL,
+				created_at datetime DEFAULT CURRENT_TIMESTAMP,
+				PRIMARY KEY (id)
+		    ) $charset_collate;";
+
+		    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+		    dbDelta($sql);
+		}
 
 		if( ! get_option( 'plugin-client_version' ) ){
 			update_option( 'plugin-client_version', $this->version );
