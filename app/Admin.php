@@ -62,6 +62,7 @@ class Admin extends Base {
 				sub_field varchar(255) DEFAULT NULL,
 				message text NOT NULL,
 				created_at datetime DEFAULT CURRENT_TIMESTAMP,
+				status varchar(50) NOT NULL DEFAULT 'pending',
 				PRIMARY KEY (id)
 		    ) $charset_collate;";
 

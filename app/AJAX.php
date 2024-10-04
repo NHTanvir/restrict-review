@@ -34,6 +34,11 @@ class AJAX extends Base {
 	public function trade_job_submission() {
 		global $wpdb;
 
+		if ( ! isset($_POST['_wpnonce']) || ! wp_verify_nonce($_POST['_wpnonce']) ) {
+			wp_send_json_error('Invalid nonce verification');
+			wp_die();
+		}
+
 		$name = sanitize_text_field($_POST['name']);
 		$tradesman_email = sanitize_email($_POST['tradesman_Email']);
 		$subject = sanitize_text_field($_POST['subject']);
@@ -54,7 +59,8 @@ class AJAX extends Base {
 				'field'           => $field,
 				'sub_field'       => $sub_field,
 				'message'         => $message,
-				'created_at'      => current_time('mysql') // You can also use the default value of `created_at`
+				'created_at'      => current_time('mysql') ,
+				'status'			=> "pending"
 			],
 			[
 				'%d', // post_id
@@ -64,7 +70,8 @@ class AJAX extends Base {
 				'%s', // field
 				'%s', // sub_field
 				'%s', // message
-				'%s'  // created_at
+				'%s',  // created_at
+				'%s'  // status
 			]
 		);
 	
