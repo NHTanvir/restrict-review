@@ -1,32 +1,25 @@
-let pc_modal = ( show = true ) => {
-	if(show) {
-		jQuery('#plugin-client-modal').show();
-	}
-	else {
-		jQuery('#plugin-client-modal').hide();
-	}
+let pc_modal = (show = true) => {
+    if (show) {
+        jQuery('#plugin-client-modal').show();
+    } else {
+        jQuery('#plugin-client-modal').hide();
+    }
 }
-
 jQuery(function($){
-	$('.jet-form-builder__submit').on('click', function(e) {
-		console.log(  'fewfwee' );
-
-        var formData = $(this).serialize();
-
-        $.ajax({
-            type: 'POST',
-            url: WPPRR.ajax_url,
-			data: formData + '&action=trade_job_submission', 
-            success: function(response) {
-                if (response.success) {
-                    alert(response.data); // Display success message
-                } else {
-                    alert(response.data); // Display error message
+    jQuery(document).ready(function($) {
+        $(document).on('click', '.jet-form-builder__submit', function(e) {
+            var formData = $(this).closest('form').serialize(); // Serialize the closest form
+            $.ajax({
+                type: 'POST',
+                url: WPPRR.ajaxurl,
+                data: formData + '&action=trade_job_submission',
+                success: function(response) {
+                    console.log( response );
+                },
+                error: function() {
+                    alert('An error occurred. Please try again.');
                 }
-            },
-            error: function() {
-                alert('An error occurred. Please try again.');
-            }
+            });
         });
     });
-})
+});

@@ -54,6 +54,7 @@ class Admin extends Base {
 		    
 		    $sql = "CREATE TABLE $table_name (
 				id mediumint(9) NOT NULL AUTO_INCREMENT,
+				post_id bigint(20) UNSIGNED NOT NULL,
 				name varchar(255) NOT NULL,
 				tradesman_email varchar(255) NOT NULL,
 				subject varchar(255) NOT NULL,
