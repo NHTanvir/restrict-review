@@ -1,32 +1,53 @@
 <?php
 use Codexpert\Plugin\Table;
 
+global $wpdb;
+
+$results = $wpdb->get_results("
+    SELECT id, post_id, name, tradesman_email, subject, field, sub_field, message, created_at, status
+    FROM {$wpdb->prefix}trade_job_submission
+    ORDER BY created_at DESC
+");
+
+// Prepare the data structure based on the actual table data
+$data = [];
+
+foreach ($results as $row) {
+    $data[] = [
+        'id'                => $row->id,                     // Order ID
+        'post_id'           => $row->post_id,                // Post ID
+        'name'              => $row->name,                   // Name
+        'tradesman_email'   => $row->tradesman_email,        // Tradesman Email
+        'subject'           => $row->subject,                // Subject (products)
+        'field'             => $row->field,                  // Field (order total or relevant info)
+        'sub_field'         => $row->sub_field,              // Sub field (if applicable)
+        'message'           => $row->message,                // Message (can represent order details)
+        'created_at'       => $row->created_at,              // Created timestamp
+        'status'            => $row->status,                 // Payment status or job status
+    ];
+}
+
+// Configure the plugin settings
 $config = [
-	'per_page'		=> 5,
-	'columns'		=> [
-		'id'				=> __( 'Order #', 'plugin-client' ),
-		'products'			=> __( 'Products', 'plugin-client' ),
-		'order_total'		=> __( 'Order Total', 'plugin-client' ),
-		'commission'		=> __( 'Commission', 'plugin-client' ),
-		'payment_status'	=> __( 'Payment Status', 'plugin-client' ),
-		'time'				=> __( 'Time', 'plugin-client' ),
-	],
-	'sortable'		=> [ 'visit', 'id', 'products', 'commission', 'payment_status', 'time' ],
-	'orderby'		=> 'time',
-	'order'			=> 'desc',
-	'data'			=> [
-		[ 'id' => 345, 'products' => 'Abc', 'order_total' => '$678', 'commission' => '$98', 'payment_status' => 'Unpaid', 'time' => '2020-06-29' ],
-		[ 'id' => 567, 'products' => 'Xyz', 'order_total' => '$178', 'commission' => '$18', 'payment_status' => 'Paid', 'time' => '2020-05-26' ],
-		[ 'id' => 451, 'products' => 'Mno', 'order_total' => '$124', 'commission' => '$12', 'payment_status' => 'Paid', 'time' => '2020-07-01' ],
-		[ 'id' => 588, 'products' => 'Uji', 'order_total' => '$523', 'commission' => '$22', 'payment_status' => 'Pending', 'time' => '2020-07-02' ],
-		[ 'id' => 426, 'products' => 'Rim', 'order_total' => '$889', 'commission' => '$33', 'payment_status' => 'Paid', 'time' => '2020-08-01' ],
-		[ 'id' => 109, 'products' => 'Rio', 'order_total' => '$211', 'commission' => '$11', 'payment_status' => 'Unpaid', 'time' => '2020-08-12' ],
-	],
-	'bulk_actions'	=> [
-		'delete'	=> __( 'Delete', 'plugin-client' ),
-		'draft'		=> __( 'Draft', 'plugin-client' ),
-	],
+    'per_page'      => 10,
+    'columns'       => [
+        'id'                => __( 'ID #', 'plugin-client' ),
+        'post_id'          => __( 'Post ID', 'plugin-client' ),
+        'name'             => __( 'Name', 'plugin-client' ),
+        'tradesman_email'  => __( 'Tradesman Email', 'plugin-client' ),
+        'subject'          => __( 'Subject', 'plugin-client' ),
+        'field'            => __( 'field', 'plugin-client' ),
+        'sub_field'        => __( 'Sub Field', 'plugin-client' ), 
+        'message'          => __( 'Message', 'plugin-client' ),   
+        'created_at'       => __( 'Time', 'plugin-client' ),
+        'status'           => __( 'Status', 'plugin-client' ),
+    ],
+    'sortable'      => ['id', 'post_id', 'name', 'tradesman_email', 'subject', 'field', 'status', 'created_at'],
+    'orderby'       => 'created_at',
+    'order'         => 'desc',
+    'data'          => $data,  // Populate with actual data
 ];
+
 
 $table = new Table( $config );
 echo '<form method="post">';
