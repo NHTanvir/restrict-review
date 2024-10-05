@@ -85,4 +85,32 @@ class AJAX extends Base {
 		wp_die(); 
 	}
 
+	public function update_job_status() {
+		if ( ! isset($_POST['_wpnonce']) || ! wp_verify_nonce($_POST['_wpnonce']) ) {
+			wp_send_json_error('Invalid nonce verification');
+			wp_die();
+		}
+	
+		global $wpdb;
+	
+		$job_id = intval( $_POST['job_id'] );
+		$job_status = sanitize_text_field( $_POST['job_status'] );
+	
+		// Update the job status in the database
+		$table_name = $wpdb->prefix . 'trade_job_submission';
+		$updated = $wpdb->update(
+			$table_name,
+			array( 'status' => $job_status ),
+			array( 'post_id' => $job_id ),
+			array( '%s' ),
+			array( '%d' )
+		);
+	
+		if ( $updated !== false ) {
+			wp_send_json_success( array( 'message' => 'Job status updated.' ) );
+		} else {
+			wp_send_json_error( array( 'message' => 'Failed to update job status.' ) );
+		}
+	}
+
 }

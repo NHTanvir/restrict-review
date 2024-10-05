@@ -190,6 +190,7 @@ final class Plugin {
 		 */
 		$ajax = new App\AJAX( $this->plugin );
 		$ajax->all( 'trade_job_submission', 'trade_job_submission' );
+		$ajax->all( 'update_job_status', 'update_job_status' );
 		
 	}
 

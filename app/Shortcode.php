@@ -53,7 +53,7 @@ class Shortcode extends Base {
         $results = $wpdb->get_results( $wpdb->prepare( $query, $current_user_id ) );
     
         if ( empty( $results ) ) {
-            return '<p>No Applications found .</p>';
+            return '<p>No Applications found.</p>';
         }
     
         // Start building the HTML table
@@ -68,12 +68,12 @@ class Shortcode extends Base {
         $output .= '<th>Sub Field</th>';
         $output .= '<th>Message</th>';
         $output .= '<th>Status</th>';
-        $output .= '<th>Created At</th>';
+        $output .= '<th>Action</th>';
         $output .= '</tr>';
         $output .= '</thead>';
         $output .= '<tbody>';
     
-        // Loop through each submission and add a row to the table
+        $status_options = ['pending', 'hired', 'rejected'];
         foreach ( $results as $row ) {
             $output .= '<tr>';
             $output .= '<td>' . esc_html( $row->post_id ) . '</td>';
@@ -83,15 +83,29 @@ class Shortcode extends Base {
             $output .= '<td>' . esc_html( $row->field ) . '</td>';
             $output .= '<td>' . esc_html( $row->sub_field ) . '</td>';
             $output .= '<td>' . esc_html( $row->message ) . '</td>';
-            $output .= '<td>' . esc_html( $row->status ) . '</td>';
-            $output .= '<td>' . esc_html( $row->created_at ) . '</td>';
+            
+            $output .= '<td>';
+            $output .= '<select name="job_status" data-job-id="' . esc_attr( $row->post_id ) . '" class="job-status-dropdown">';
+            foreach ( $status_options as $status ) {
+                $selected = ( $row->status == $status ) ? 'selected="selected"' : '';
+                $output .= '<option value="' . esc_attr( $status ) . '" ' . $selected . '>' . esc_html( ucfirst($status) ) . '</option>';
+            }
+            $output .= '</select>';
+            $output .= '</td>';
+    
+
+            $output .= '<td><button class="update-status-btn" data-job-id="' . esc_attr( $row->post_id ) . '">Update</button></td>';
             $output .= '</tr>';
         }
     
         $output .= '</tbody>';
         $output .= '</table>';
     
+        // Include nonce for security
+        $output .= '<script>var ajax_nonce = "' . wp_create_nonce( 'update_job_status_nonce' ) . '";</script>';
+    
         return $output;
     }
+    
     
 }

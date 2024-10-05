@@ -28,5 +28,34 @@ jQuery(function($){
                 }
             });
         });
+        $('.update-status-btn').on('click', function(e) {
+            e.preventDefault();
+    
+            var button = $(this);
+            var jobId = button.data('job-id');
+            var status = $('select[data-job-id="' + jobId + '"]').val();
+    
+            $.ajax({
+                url: WPPRR.ajaxurl,
+                method: 'POST',
+                data: {
+                    action: 'update_job_status',
+                    job_id: jobId,
+                    job_status: status,
+                    _wpnonce: WPPRR._wpnonce
+                },
+                success: function(response) {
+                    if (response.success) {
+                        alert('Job status updated successfully!');
+                    } else {
+                        alert('Failed to update job status.');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX error:', status, error);
+                    alert('An error occurred while updating the job status.');
+                }
+            });
+        });
     });
 });

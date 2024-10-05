@@ -14,3 +14,6 @@
 #plugin-client-modal-loader {
     position: absolute;
 }
+.job-status-dropdown{
+    width: 120px;
+}
