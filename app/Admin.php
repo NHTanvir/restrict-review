@@ -52,9 +52,10 @@ class Admin extends Base {
 		if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
 		    $charset_collate = $wpdb->get_charset_collate();
 		    
-		    $sql = "CREATE TABLE $table_name (
+			$sql = "CREATE TABLE $table_name (
 				id mediumint(9) NOT NULL AUTO_INCREMENT,
 				post_id bigint(20) UNSIGNED NOT NULL,
+				user_id bigint(20) UNSIGNED DEFAULT NULL,
 				name varchar(255) NOT NULL,
 				tradesman_email varchar(255) NOT NULL,
 				subject varchar(255) NOT NULL,
@@ -64,7 +65,7 @@ class Admin extends Base {
 				created_at datetime DEFAULT CURRENT_TIMESTAMP,
 				status varchar(50) NOT NULL DEFAULT 'pending',
 				PRIMARY KEY (id)
-		    ) $charset_collate;";
+			) $charset_collate;";
 
 		    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 		    dbDelta($sql);

@@ -72,7 +72,7 @@ class Shortcode extends Base {
         $output .= '</thead>';
         $output .= '<tbody>';
     
-        $status_options = ['pending', 'hired', 'rejected'];
+        $status_options = ['pending', 'hired', 'rejected','complete'];
         foreach ( $results as $row ) {
             $output .= '<tr>';
             $output .= '<td>' . esc_html( $row->post_id ) . '</td>';

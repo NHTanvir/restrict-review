@@ -58,11 +58,26 @@ class User_Specific_Review {
      * @return bool
      */
     public function check( $source = 'post', $user_data = [] ) {
-        Helper::pri( $user_data );
-        if( get_current_user_id() == 2 ) {
+        global $wpdb;
+    
+        $post_id            = get_the_ID();
+        $post_user_id       = get_post_meta( $post_id, 'user_id', true );
+    
+        $table_name = $wpdb->prefix . 'trade_job_submission';
+    
+        $query = $wpdb->prepare(
+            "SELECT COUNT(*) FROM $table_name WHERE user_id = %d AND status = %s",
+            $post_user_id,
+            'complete'
+        );
+    
+        $result = $wpdb->get_var( $query );
+    
+        if ( $result > 0 ) {
+            return true;
+        } else {
             return false;
         }
-
-        return false;
     }
+    
 }

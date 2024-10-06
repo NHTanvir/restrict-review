@@ -46,24 +46,26 @@ class AJAX extends Base {
 		$sub_field = sanitize_text_field($_POST['Sub-field']);
 		$message = sanitize_textarea_field($_POST['email_description']);
 		$post_id = intval($_POST['post_id']);
-	
+		$user_id = get_current_user_id();
 		$table_name = $wpdb->prefix . 'trade_job_submission';
 	
 		$inserted = $wpdb->insert(
 			$table_name,
 			[
 				'post_id'         => $post_id,
+				'user_id'         => $user_id, 
 				'name'            => $name,
 				'tradesman_email' => $tradesman_email,
 				'subject'         => $subject,
 				'field'           => $field,
 				'sub_field'       => $sub_field,
 				'message'         => $message,
-				'created_at'      => current_time('mysql') ,
-				'status'			=> "pending"
+				'created_at'      => current_time('mysql'),
+				'status'          => "pending"
 			],
 			[
 				'%d', // post_id
+				'%d', // user_id
 				'%s', // name
 				'%s', // tradesman_email
 				'%s', // subject
@@ -74,7 +76,6 @@ class AJAX extends Base {
 				'%s'  // status
 			]
 		);
-	
 		// Return a JSON response
 		if ($inserted) {
 			wp_send_json_success('Your request has been submitted successfully!');
