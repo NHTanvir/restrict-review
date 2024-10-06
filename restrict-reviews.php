@@ -70,6 +70,7 @@ final class Plugin {
 	 */
 	private function include() {
 		require_once( dirname( __FILE__ ) . '/vendor/autoload.php' );
+		require_once( dirname( __FILE__ ) . './classes/class-user-specific-review.php');
 	}
 
 	/**
@@ -184,6 +185,7 @@ final class Plugin {
 		 * Executes on both the admin area and front area
 		 */
 		$common = new App\Common( $this->plugin );
+		$common->action( 'jet-reviews/user/conditions/register', 'register_custom_conditions' );
 
 		/**
 		 * AJAX related hooks

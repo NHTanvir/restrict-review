@@ -57,18 +57,17 @@ class Shortcode extends Base {
         }
     
         // Start building the HTML table
-        $output = '<table border="1" cellpadding="10" cellspacing="0">';
+        $output = '<table class="application-table" border="1" cellpadding="10" cellspacing="0">';
         $output .= '<thead>';
         $output .= '<tr>';
-        $output .= '<th>Job ID</th>';
+        $output .= '<th style="width:75px">Job ID</th>';
         $output .= '<th>Name</th>';
         $output .= '<th>Tradesman Email</th>';
         $output .= '<th>Subject</th>';
         $output .= '<th>Field</th>';
         $output .= '<th>Sub Field</th>';
         $output .= '<th>Message</th>';
-        $output .= '<th>Status</th>';
-        $output .= '<th>Action</th>';
+        $output .= '<th>Status</th>';  // Status column header
         $output .= '</tr>';
         $output .= '</thead>';
         $output .= '<tbody>';
@@ -84,17 +83,16 @@ class Shortcode extends Base {
             $output .= '<td>' . esc_html( $row->sub_field ) . '</td>';
             $output .= '<td>' . esc_html( $row->message ) . '</td>';
             
+            // Status dropdown and update button in the same column
             $output .= '<td>';
             $output .= '<select name="job_status" data-job-id="' . esc_attr( $row->post_id ) . '" class="job-status-dropdown">';
             foreach ( $status_options as $status ) {
                 $selected = ( $row->status == $status ) ? 'selected="selected"' : '';
                 $output .= '<option value="' . esc_attr( $status ) . '" ' . $selected . '>' . esc_html( ucfirst($status) ) . '</option>';
             }
-            $output .= '</select>';
-            $output .= '</td>';
-    
-
-            $output .= '<td><button class="update-status-btn" data-job-id="' . esc_attr( $row->post_id ) . '">Update</button></td>';
+            $output .= '</select><br>';
+            $output .= '<button class="update-status-btn" data-job-id="' . esc_attr( $row->post_id ) . '">Update</button>';
+            $output .= '</td>';  // Close the same cell
             $output .= '</tr>';
         }
     
@@ -106,6 +104,4 @@ class Shortcode extends Base {
     
         return $output;
     }
-    
-    
 }

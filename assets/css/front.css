@@ -15,5 +15,15 @@
     position: absolute;
 }
 .job-status-dropdown{
-    width: 120px;
+    width: 100px;
+    padding: 7px;
+}
+.application-table{
+    border-collapse: collapse;
+    table-layout: fixed;
+    overflow: hidden;
+    word-break: break-all;
+}
+.application-table td, .application-table th{
+    padding: 10px;
 }

@@ -30,4 +30,8 @@ class Common extends Base {
 		$this->name		= $this->plugin['Name'];
 		$this->version	= $this->plugin['Version'];
 	}
+
+	public function register_custom_conditions( $conditions_manager ) {
+		$conditions_manager->register_condition( 'WPPlugines\\Restrict_Reviews\\App\\Conditions\\User_Specific_Review' );
+	}
 }
