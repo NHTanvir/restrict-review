@@ -31,9 +31,7 @@ class Front extends Base {
 		$this->version	= $this->plugin['Version'];
 	}
 
-	public function head() {
-		echo get_current_user_id();
-	}
+	public function head() {}
 	
 	/**
 	 * Enqueue JavaScripts and stylesheets

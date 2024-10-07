@@ -142,8 +142,8 @@ final class Plugin {
 			/**
 			 * Settings related hooks
 			 */
-			$settings = new App\Settings( $this->plugin );
-			$settings->action( 'plugins_loaded', 'init_menu' );
+			// $settings = new App\Settings( $this->plugin );
+			// $settings->action( 'plugins_loaded', 'init_menu' );
 
 			/**
 			 * Renders different notices
