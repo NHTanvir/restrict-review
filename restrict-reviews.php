@@ -70,7 +70,7 @@ final class Plugin {
 	 */
 	private function include() {
 		require_once( dirname( __FILE__ ) . '/vendor/autoload.php' );
-		require_once( dirname( __FILE__ ) . './classes/class-user-specific-review.php');
+		require_once( dirname( __FILE__ ) . '/classes/class-user-specific-review.php');
 	}
 
 	/**
@@ -169,6 +169,8 @@ final class Plugin {
 			 */
 			$shortcode = new App\Shortcode( $this->plugin );
 			$shortcode->register( 'trade_job_submissions', 'job_submissions' );
+			$shortcode->register( 'trade_my_feedbacks', 'my_feedbacks' );
+			$shortcode->register( 'trade_feedback_received', 'feedbacks_received' );
 
 		endif;
 
