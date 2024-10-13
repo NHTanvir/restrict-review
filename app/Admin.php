@@ -50,8 +50,8 @@ class Admin extends Base {
 	    $table_name = $wpdb->prefix . 'trade_job_submission';
 
 		if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
-		    $charset_collate = $wpdb->get_charset_collate();
-		    
+			$charset_collate = $wpdb->get_charset_collate();
+			
 			$sql = "CREATE TABLE $table_name (
 				id mediumint(9) NOT NULL AUTO_INCREMENT,
 				post_id bigint(20) UNSIGNED NOT NULL,
@@ -62,14 +62,16 @@ class Admin extends Base {
 				field varchar(255) NOT NULL,
 				sub_field varchar(255) DEFAULT NULL,
 				message text NOT NULL,
+				viewed tinyint(1) NOT NULL DEFAULT 0, 
 				created_at datetime DEFAULT CURRENT_TIMESTAMP,
 				status varchar(50) NOT NULL DEFAULT 'pending',
 				PRIMARY KEY (id)
 			) $charset_collate;";
-
-		    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-		    dbDelta($sql);
+		
+			require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+			dbDelta($sql);
 		}
+		
 
 		if( ! get_option( 'plugin-client_version' ) ){
 			update_option( 'plugin-client_version', $this->version );
