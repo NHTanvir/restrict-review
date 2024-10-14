@@ -59,23 +59,20 @@ class User_Specific_Review {
      */
     public function check( $source = 'post', $user_data = [] ) {
 
-        // Check if user data is provided
         if ( empty( $user_data ) ) {
-            return true;
+            return false; 
         }
     
         $source_instance = jet_reviews()->reviews_manager->sources->get_source_instance( $source );
         $source_id = $source_instance->get_current_id();
         $user_id = $user_data['id'];
     
-        // Step 1: Get the user’s completed jobs
         global $wpdb;
         $post_id = get_the_ID(); // Current post ID
         $post_user_id = get_post_meta( $post_id, 'user_id', true );
     
         $table_name = $wpdb->prefix . 'trade_job_submission';
         
-        // Count completed jobs for the specific user
         $completed_jobs_query = $wpdb->prepare(
             "SELECT COUNT(*) FROM $table_name WHERE user_id = %d AND status = %s",
             $post_user_id,
@@ -94,12 +91,12 @@ class User_Specific_Review {
         );
     
         $submitted_reviews_count = $wpdb->get_var( $reviews_query );
-    
-        if ( $submitted_reviews_count >= $completed_jobs_count ) {
-            return false; 
+
+        if ( $completed_jobs_count > $submitted_reviews_count ) {
+            return true;
         }
     
-        return true; 
+        return false; 
     }
- 
+    
 }
