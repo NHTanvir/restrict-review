@@ -43,12 +43,39 @@ class Front extends Base {
 
 		wp_enqueue_script( $this->slug, plugins_url( "/assets/js/front{$min}.js", WPPRR ), [ 'jquery' ], time(), true );
 		
+		$unviewed_count = $this->count_unviewed_jobs();
+
 		$localized = [
-			'ajaxurl'	=> admin_url( 'admin-ajax.php' ),
-			'_wpnonce'	=> wp_create_nonce(),
+			'ajaxurl'       => admin_url( 'admin-ajax.php' ),
+			'_wpnonce'      => wp_create_nonce(),
+			'unviewedCount' => $unviewed_count, 
 		];
 		wp_localize_script( $this->slug, 'WPPRR', apply_filters( "{$this->slug}-localized", $localized ) );
 	}
+
+	public function count_unviewed_jobs() {
+		global $wpdb;
+	
+		// Get the current user ID
+		$current_user_id = get_current_user_id();
+	
+		// Table name
+		$table_name = $wpdb->prefix . 'trade_job_submission';
+	
+		// Prepare the query to count unviewed jobs
+		$query = $wpdb->prepare(
+			"SELECT COUNT(*) 
+			 FROM $table_name 
+			 WHERE viewed = %d 
+			 AND post_id IN (SELECT ID FROM {$wpdb->posts} WHERE post_author = %d)",
+			0, // looking for unviewed jobs
+			$current_user_id
+		);
+	
+		// Execute the query and return the count
+		return $wpdb->get_var($query);
+	}
+	
 
 	public function modal() {
 		echo '

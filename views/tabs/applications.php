@@ -24,8 +24,6 @@ if ( empty( $results ) ) {
     echo '<p>No Applications found.</p>';
     return;
 }
-
-// Start building the HTML table
 ?>
 <table class="application-table" border="1" cellpadding="10" cellspacing="0">
     <thead>
@@ -83,7 +81,7 @@ if ( empty( $results ) ) {
                             <?php echo esc_html( $row->name ); ?>
                         </a>
                     <?php else : ?>
-                        <?php echo esc_html( $row->name ); // Fallback if no post found ?>
+                        <?php echo esc_html( $row->name );?>
                     <?php endif; ?>
                 </td>
                 <td><?php echo esc_html( $row->tradesman_email ); ?></td>
