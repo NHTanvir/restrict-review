@@ -68,14 +68,15 @@ class User_Specific_Review {
         $user_id = $user_data['id'];
     
         global $wpdb;
-        $post_id = get_the_ID(); // Current post ID
+        $post_id = get_the_ID();
         $post_user_id = get_post_meta( $post_id, 'user_id', true );
     
         $table_name = $wpdb->prefix . 'trade_job_submission';
-        
+
         $completed_jobs_query = $wpdb->prepare(
-            "SELECT COUNT(*) FROM $table_name WHERE user_id = %d AND status = %s",
-            $post_user_id,
+            "SELECT COUNT(*) FROM $table_name WHERE user_id = %d AND post_id IN (SELECT ID FROM {$wpdb->posts} WHERE post_author = %d) AND status = %s",
+            $post_user_id, 
+            $user_id, 
             'complete'
         );
     

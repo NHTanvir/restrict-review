@@ -31,7 +31,7 @@
     color: white;
 }
 
-.job-status-dropdown.completed {
+.job-status-dropdown.complete {
     background-color: red;
     color: white;
 }
