@@ -61,7 +61,7 @@ class AJAX extends Base {
 				'sub_field'       => $sub_field,
 				'message'         => $message,
 				'created_at'      => current_time('mysql'),
-				'status'          => "pending"
+				'status'          => "hiring"
 			],
 			[
 				'%d', // post_id

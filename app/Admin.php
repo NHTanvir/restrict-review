@@ -64,7 +64,7 @@ class Admin extends Base {
 				message text NOT NULL,
 				viewed tinyint(1) NOT NULL DEFAULT 0, 
 				created_at datetime DEFAULT CURRENT_TIMESTAMP,
-				status varchar(50) NOT NULL DEFAULT 'pending',
+				status varchar(50) NOT NULL DEFAULT 'hiring',
 				PRIMARY KEY (id)
 			) $charset_collate;";
 		

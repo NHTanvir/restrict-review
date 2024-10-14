@@ -14,16 +14,38 @@
 #plugin-client-modal-loader {
     position: absolute;
 }
-.job-status-dropdown{
-    width: 100px;
-    padding: 7px;
+.application-table {
+    width: 100%;
+    overflow-x: auto;
 }
-.application-table{
-    border-collapse: collapse;
-    table-layout: fixed;
-    overflow: hidden;
-    word-break: break-all;
+.job-status-dropdown {
+    width: 130px;
 }
-.application-table td, .application-table th{
-    padding: 10px;
+.job-status-dropdown.hiring {
+    background-color: orange;
+    color: white;
+}
+
+.job-status-dropdown.hired {
+    background-color: green;
+    color: white;
+}
+
+.job-status-dropdown.completed {
+    background-color: red;
+    color: white;
+}
+
+.job-status-dropdown {
+    padding: 5px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.job-status-dropdown option {
+    color: black;
+}
+
+.elementor-element-11a7213 {
+    width: unset !important;
 }
