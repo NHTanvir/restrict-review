@@ -83,8 +83,21 @@ class User_Specific_Review {
             $user_id,
             'complete'
         );
+
+        $completed_jobs_query_2 = $wpdb->prepare(
+            "SELECT COUNT(*) 
+             FROM $table_name 
+             WHERE user_id = %d 
+             AND author_id = %d 
+             AND status = %s",
+            $user_id, 
+            $post_user_id,
+            'complete'
+        );
         
         $completed_jobs_count = $wpdb->get_var($completed_jobs_query);
+
+        $completed_jobs_count2 = $wpdb->get_var($completed_jobs_query_2);
 
     
         $reviews_table = jet_reviews()->db->tables( 'reviews', 'name' );
@@ -99,6 +112,9 @@ class User_Specific_Review {
         $submitted_reviews_count = $wpdb->get_var( $reviews_query );
 
         if ( $completed_jobs_count > $submitted_reviews_count ) {
+            return true;
+        }
+        if ( $completed_jobs_count2 > $submitted_reviews_count ) {
             return true;
         }
     

@@ -20,7 +20,7 @@ $results = $wpdb->get_results($query);
 
 
 if ( empty( $results ) ) {
-    echo '<p>No quotations found.</p>';
+    echo '<p>No applications found.</p>';
     return;
 }
 ?>
