@@ -47,7 +47,7 @@ if ( empty( $results ) ) {
             global $wpdb;
 
             // Assuming $row->user_id contains the user ID you want to match against the post meta.
-            $user_id = esc_attr( $row->user_id );
+            $author_id = esc_attr( $row->author_id );
 
             // Query to get the post ID for the specific user
             $query = $wpdb->prepare(
@@ -60,7 +60,7 @@ if ( empty( $results ) ) {
                 AND postmeta.meta_value = %s
                 LIMIT 1
                 ",
-                $user_id
+                $author_id
             );
 
             $post_id = $wpdb->get_var( $query );

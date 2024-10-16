@@ -74,13 +74,18 @@ class User_Specific_Review {
         $table_name = $wpdb->prefix . 'trade_job_submission';
 
         $completed_jobs_query = $wpdb->prepare(
-            "SELECT COUNT(*) FROM $table_name WHERE user_id = %d AND post_id IN (SELECT ID FROM {$wpdb->posts} WHERE post_author = %d) AND status = %s",
+            "SELECT COUNT(*) 
+             FROM $table_name 
+             WHERE user_id = %d 
+             AND author_id = %d 
+             AND status = %s",
             $post_user_id, 
-            $user_id, 
+            $user_id,
             'complete'
         );
-    
-        $completed_jobs_count = $wpdb->get_var( $completed_jobs_query );
+        
+        $completed_jobs_count = $wpdb->get_var($completed_jobs_query);
+
     
         $reviews_table = jet_reviews()->db->tables( 'reviews', 'name' );
     

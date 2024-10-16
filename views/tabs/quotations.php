@@ -18,6 +18,14 @@ $query = $wpdb->prepare("
 
 $results = $wpdb->get_results($query);
 
+$update_query = $wpdb->prepare("
+    UPDATE $table_name
+    SET viewed = %d
+    WHERE author_id = %d
+", 1, $current_user_id);
+
+$updated_rows = $wpdb->query($update_query);
+
 
 if ( empty( $results ) ) {
     echo '<p>No quotations found.</p>';
