@@ -46,6 +46,7 @@ class AJAX extends Base {
 		$sub_field = sanitize_text_field($_POST['Sub-field']);
 		$message = sanitize_textarea_field($_POST['email_description']);
 		$post_id = intval($_POST['post_id']);
+		$author_id  = get_post_field('post_author', $post_id);
 		$user_id = get_current_user_id();
 		$table_name = $wpdb->prefix . 'trade_job_submission';
 	
@@ -53,6 +54,7 @@ class AJAX extends Base {
 			$table_name,
 			[
 				'post_id'         => $post_id,
+				'author_id'         => $author_id,
 				'user_id'         => $user_id, 
 				'name'            => $name,
 				'tradesman_email' => $tradesman_email,
@@ -65,6 +67,7 @@ class AJAX extends Base {
 			],
 			[
 				'%d', // post_id
+				'%d', // author_id
 				'%d', // user_id
 				'%s', // name
 				'%s', // tradesman_email

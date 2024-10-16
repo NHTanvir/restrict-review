@@ -33,7 +33,11 @@ class Shortcode extends Base {
     }
 
     public function job_submissions() {
-        return Helper::get_template( 'applications', 'views/tabs' );
+        return Helper::get_template( 'quotations', 'views/tabs' );
+    }
+
+    public function job_applied() {
+        return Helper::get_template( 'applied', 'views/tabs' ); 
     }
 
     public function my_feedbacks() {

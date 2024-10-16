@@ -45,7 +45,24 @@
 .job-status-dropdown option {
     color: black;
 }
+.jet-profile-menu__item:nth-child(9){
+    position: relative;
+}
+.jet-profile-menu__item:nth-child(9) .jet-profile-menu__item-link::before {
+    position: absolute;
+    content: attr(data-count);
+    color: #ffffff;
+    right: -15px;
+    background-color: red;
+    border-radius: 50%;
+    height: 30px;
+    width: 30px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-.elementor-element-11a7213 {
-    width: unset !important;
+.hide-unviewed-count::before {
+    display: none!important;
 }

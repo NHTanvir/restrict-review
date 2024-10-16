@@ -4,24 +4,23 @@ global $wpdb;
 $current_user_id = get_current_user_id();
 
 if ( $current_user_id == 0 ) {
-    echo '<p>You must be logged in to view your job submissions.</p>';
+    echo '<p>You must be logged in to view your quotations.</p>';
     return;
 }
 
 $table_name = $wpdb->prefix . 'trade_job_submission';
-$query = "
-    SELECT submissions.*
-    FROM $table_name as submissions
-    INNER JOIN {$wpdb->posts} as posts
-    ON submissions.post_id = posts.ID
-    WHERE posts.post_author = %d
-    ORDER BY submissions.created_at DESC
-";
+$query = $wpdb->prepare("
+    SELECT *
+    FROM $table_name
+    WHERE author_id = %d
+    ORDER BY created_at DESC
+", $current_user_id);
 
-$results = $wpdb->get_results( $wpdb->prepare( $query, $current_user_id ) );
+$results = $wpdb->get_results($query);
+
 
 if ( empty( $results ) ) {
-    echo '<p>No Applications found.</p>';
+    echo '<p>No quotations found.</p>';
     return;
 }
 ?>

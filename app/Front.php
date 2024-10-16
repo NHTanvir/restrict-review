@@ -55,24 +55,18 @@ class Front extends Base {
 
 	public function count_unviewed_jobs() {
 		global $wpdb;
-	
-		// Get the current user ID
 		$current_user_id = get_current_user_id();
-	
-		// Table name
 		$table_name = $wpdb->prefix . 'trade_job_submission';
 	
-		// Prepare the query to count unviewed jobs
 		$query = $wpdb->prepare(
-			"SELECT COUNT(*) 
-			 FROM $table_name 
+			"SELECT COUNT(*)
+			 FROM $table_name
 			 WHERE viewed = %d 
-			 AND post_id IN (SELECT ID FROM {$wpdb->posts} WHERE post_author = %d)",
-			0, // looking for unviewed jobs
-			$current_user_id
+			 AND author_id = %d",
+			0, 
+			$current_user_id 
 		);
 	
-		// Execute the query and return the count
 		return $wpdb->get_var($query);
 	}
 	

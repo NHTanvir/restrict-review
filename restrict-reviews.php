@@ -169,6 +169,7 @@ final class Plugin {
 			 */
 			$shortcode = new App\Shortcode( $this->plugin );
 			$shortcode->register( 'trade_job_submissions', 'job_submissions' );
+			$shortcode->register( 'trade_job_applied', 'job_applied' );
 			$shortcode->register( 'trade_my_feedbacks', 'my_feedbacks' );
 			$shortcode->register( 'trade_feedback_received', 'feedbacks_received' );
 
