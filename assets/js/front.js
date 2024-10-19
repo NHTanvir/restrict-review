@@ -10,18 +10,15 @@ jQuery(function($){
 
         var unviewedCount = WPPRR.unviewedCount;
 
-        // Select the target element
-        var menuItemLink = $('.jet-profile-menu__item:nth-child(9) .jet-profile-menu__item-link');
-    
-        // Update the content of the ::before pseudo-element based on the count
+        var menuItemLink = $('.jet-profile-menu__item-link:contains("Quotations")');
+        
         if (unviewedCount > 0) {
-            // Set the content of the ::before pseudo-element dynamically using CSS
             menuItemLink.css('position', 'relative');
-            menuItemLink.attr('data-count', unviewedCount); // Store the count in a data attribute
+            menuItemLink.attr('data-count', unviewedCount); 
         } else {
-            // Hide the ::before pseudo-element if the count is 0
             menuItemLink.addClass('hide-unviewed-count');
         }
+        
 
         $(document).on('click', '.jet-form-builder__submit', function(e) {
             var formData = $(this).closest('form').serialize(); 
