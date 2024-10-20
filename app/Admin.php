@@ -64,6 +64,8 @@ class Admin extends Base {
 				sub_field varchar(255) DEFAULT NULL,
 				message text NOT NULL,
 				viewed tinyint(1) NOT NULL DEFAULT 0, 
+				author_review tinyint(1) NOT NULL DEFAULT 0, 
+				user_review tinyint(1) NOT NULL DEFAULT 0, 
 				created_at datetime DEFAULT CURRENT_TIMESTAMP,
 				status varchar(50) NOT NULL DEFAULT 'hiring',
 				PRIMARY KEY (id)

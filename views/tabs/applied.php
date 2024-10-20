@@ -30,6 +30,7 @@ if ( empty( $results ) ) {
             <tr>
                 <th>Job Title</th>
                 <th>Author Name</th>
+                <th>Author Email</th>
                 <th>Subject</th>
                 <th>Field</th>
                 <th>Sub Field</th>
@@ -46,8 +47,10 @@ if ( empty( $results ) ) {
 
                 global $wpdb;
 
-                $author_id = esc_attr( $row->author_id );
-
+                $author_id      = esc_attr( $row->author_id );
+                $author_info    = get_userdata($author_id);
+                $author_email   = $author_info->user_email;
+                $author_name    = $author_info->user_nicename;
                 $query = $wpdb->prepare(
                     "
                     SELECT posts.ID 
@@ -61,12 +64,13 @@ if ( empty( $results ) ) {
                     $author_id
                 );
 
+
                 $post_id = $wpdb->get_var( $query );
 
                 $post_url = $post_id ? get_permalink( $post_id ) : '';
 
                 ?>
-                <tr>
+                <tr data-review-id="<?php echo esc_attr( $row->post_id ); ?>">
                     <td>
                         <a href="<?php echo esc_url( $job_url ); ?>" target="_blank">
                             <?php echo esc_html( $title ); ?>
@@ -75,12 +79,13 @@ if ( empty( $results ) ) {
                     <td>
                         <?php if ( $post_url ) : ?>
                             <a href="<?php echo esc_url( $post_url ); ?>">
-                                <?php echo esc_html( get_post_meta( $post_id, 'user_name', true ) ); ?>
+                                <?php echo esc_html( $author_name );?>
                             </a>
                         <?php else : ?>
-                            <?php echo esc_html( $row->name );?>
+                            <?php echo esc_html( $author_name );?>
                         <?php endif; ?>
                     </td>
+                    <td><?php echo esc_html( $author_email ); ?></td>
                     <td><?php echo esc_html( $row->subject ); ?></td>
                     <td><?php echo esc_html( $row->field ); ?></td>
                     <td><?php echo esc_html( $row->sub_field ); ?></td>

@@ -20,6 +20,9 @@
 .application-table td {
     white-space: nowrap;
 }
+.application-table tr {
+    position: relative;
+}
 .restrict-reviews-stars {
     display: flex;
     gap: 5px;

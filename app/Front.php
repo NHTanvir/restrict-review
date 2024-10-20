@@ -37,6 +37,37 @@ class Front extends Base {
 	 * Enqueue JavaScripts and stylesheets
 	 */
 	public function enqueue_scripts() {
+		global $wpdb;
+		$unreviewed_jobs  		= 0;
+		$table_name 			= $wpdb->prefix . 'trade_job_submission';
+		$user_id 				= get_current_user_id();
+		if ( current_user_can( 'tradesman' ) ) {
+			$unreviewed_jobs_query = $wpdb->prepare(
+				"SELECT post_id 
+				 FROM $table_name 
+				 WHERE user_id = %d 
+				 AND status = %s 
+				 AND user_review = %d", 
+				$user_id,
+				'complete',
+				0 
+			);
+			$unreviewed_jobs = $wpdb->get_col($unreviewed_jobs_query);
+		}
+		if ( current_user_can( 'client' ) ) {
+			$unreviewed_jobs_query = $wpdb->prepare(
+				"SELECT post_id 
+				 FROM $table_name 
+				 WHERE author_id = %d 
+				 AND status = %s 
+				 AND author_review = %d", 
+				$user_id,
+				'complete',
+				0 
+			);
+			$unreviewed_jobs = $wpdb->get_col($unreviewed_jobs_query);
+		}
+		
 		$min = defined( 'WPPRR_DEBUG' ) && WPPRR_DEBUG ? '' : '.min';
 
 		wp_enqueue_style( $this->slug, plugins_url( "/assets/css/front{$min}.css", WPPRR ), '', time(), 'all' );
@@ -46,9 +77,10 @@ class Front extends Base {
 		$unviewed_count = $this->count_unviewed_jobs();
 
 		$localized = [
-			'ajaxurl'       => admin_url( 'admin-ajax.php' ),
-			'_wpnonce'      => wp_create_nonce(),
-			'unviewedCount' => $unviewed_count, 
+			'ajaxurl'       	=> admin_url( 'admin-ajax.php' ),
+			'_wpnonce'      	=> wp_create_nonce(),
+			'unviewedCount' 	=> $unviewed_count,
+			'unreviewedJobs' 	=> $unreviewed_jobs, 
 		];
 		wp_localize_script( $this->slug, 'WPPRR', apply_filters( "{$this->slug}-localized", $localized ) );
 	}

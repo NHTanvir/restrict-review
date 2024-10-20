@@ -77,7 +77,7 @@ if ( empty( $results ) ) {
                 $post_url = $post_id ? get_permalink( $post_id ) : '';
 
                 ?>
-                <tr>
+                <tr data-review-id="<?php echo esc_attr( $row->post_id ); ?>">
                     <td>
                         <a href="<?php echo esc_url( $job_url ); ?>" target="_blank">
                             <?php echo esc_html( $title ); ?>

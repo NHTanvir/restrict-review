@@ -62,16 +62,13 @@ class User_Specific_Review {
         if ( empty( $user_data ) ) {
             return false; 
         }
-    
-        $source_instance = jet_reviews()->reviews_manager->sources->get_source_instance( $source );
-        $source_id = $source_instance->get_current_id();
-        $user_id = $user_data['id'];
-    
         global $wpdb;
-        $post_id = get_the_ID();
-        $post_user_id = get_post_meta( $post_id, 'user_id', true );
-    
-        $table_name = $wpdb->prefix . 'trade_job_submission';
+        $source_instance    = jet_reviews()->reviews_manager->sources->get_source_instance( $source );
+        $source_id          = $source_instance->get_current_id();
+        $user_id            = $user_data['id'];
+        $post_id            = get_the_ID();
+        $post_user_id       = get_post_meta( $post_id, 'user_id', true );
+        $table_name         = $wpdb->prefix . 'trade_job_submission';
 
         $completed_jobs_query = $wpdb->prepare(
             "SELECT COUNT(*) 
@@ -95,12 +92,9 @@ class User_Specific_Review {
             'complete'
         );
         
-        $completed_jobs_count = $wpdb->get_var($completed_jobs_query);
-
-        $completed_jobs_count2 = $wpdb->get_var($completed_jobs_query_2);
-
-    
-        $reviews_table = jet_reviews()->db->tables( 'reviews', 'name' );
+        $completed_jobs_count   = $wpdb->get_var($completed_jobs_query);
+        $completed_jobs_count2  = $wpdb->get_var($completed_jobs_query_2);
+        $reviews_table          = jet_reviews()->db->tables( 'reviews', 'name' );
     
         $reviews_query = $wpdb->prepare(
             "SELECT COUNT(*) FROM $reviews_table WHERE source = %s AND post_id = %s AND author = %s AND approved = 1",

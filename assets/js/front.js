@@ -77,5 +77,28 @@ jQuery(function ($) {
                 },
             });
         });
+
+        if (WPPRR.unreviewedJobs && WPPRR.unreviewedJobs.length) {
+            WPPRR.unreviewedJobs.forEach(function (jobId) {
+                var $tr = $('tr[data-review-id="' + jobId + '"]');
+                if ($tr.length) {
+                    var $secondTd = $tr.find("td").eq(1);
+                    var $message = $(
+                        '<span class="review-message">Click username to give Review</span>'
+                    ).css({
+                        position: "absolute",
+                        left: "100px",
+                        top: "-15px",
+                        zIndex: "10",
+                        backgroundColor: "#ff0000",
+                        color: "white",
+                        padding: "2px 5px",
+                        borderRadius: "5px",
+                    });
+
+                    $secondTd.prepend($message);
+                }
+            });
+        }
     });
 });
