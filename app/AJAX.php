@@ -108,15 +108,49 @@ class AJAX extends Base {
 				array( '%d' )
 			);
 
-		if( $job_status === 'complete' || $job_status === 'hired' ) {
-			$post = array(
-				'ID'           => $job_id,
-				'post_status'  => 'closed',
-			);
-		
-			wp_update_post( $post );
-		}
-		else {
+			if ($job_status === 'hired') {
+				$post = array(
+					'ID' => $job_id,
+					'post_status' => 'closed',
+				);
+			
+				wp_update_post($post);
+			
+				$user_email = get_the_author_meta('user_email', $user_id);
+			
+				$subject = 'You Are Hired!';
+				$message = 'Congratulations! You have been hired for the job with ID ' . $job_id . '.';
+			
+				if (!empty($user_email)) {
+					wp_mail($user_email, $subject, $message);
+				}
+			}
+			
+			if ($job_status === 'complete') {
+				$post = array(
+					'ID' => $job_id,
+					'post_status' => 'closed',
+				);
+			
+				wp_update_post($post);
+			
+				$author_email = get_the_author_meta('user_email', $author_id);
+				$user_email = get_the_author_meta('user_email', $user_id);
+			
+				$subject = 'Job Completion - Review Request';
+				$message = 'The job with ID ' . $job_id . ' has been completed. Please take a moment to provide your review.';
+			
+				if (!empty($author_email)) {
+					wp_mail($author_email, $subject, $message);
+				}
+			
+				// Send email to the user
+				if (!empty($user_email)) {
+					wp_mail($user_email, $subject, $message);
+				}
+			}
+			
+		if ( $job_status != 'complete' || $job_status != 'hired' ) {
 			$post = array(
 				'ID'           => $job_id,
 				'post_status'  => 'publish'
