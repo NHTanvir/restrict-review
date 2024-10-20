@@ -16,22 +16,31 @@
 }
 .application-table {
     width: 100%;
-    overflow-x: auto;
+}
+.application-table td {
+    white-space: nowrap;
+}
+.restrict-reviews-stars {
+    display: flex;
+    gap: 5px;
 }
 .job-status-dropdown {
     width: 130px;
 }
-.job-status-dropdown.hiring {
+.job-status-dropdown.hiring,
+.job-status.hiring {
     background-color: orange;
     color: white;
 }
 
-.job-status-dropdown.hired {
+.job-status-dropdown.hired,
+.job-status.hired {
     background-color: green;
     color: white;
 }
 
-.job-status-dropdown.complete {
+.job-status-dropdown.complete,
+.job-status.complete {
     background-color: red;
     color: white;
 }

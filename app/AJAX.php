@@ -54,7 +54,7 @@ class AJAX extends Base {
 			$table_name,
 			[
 				'post_id'         => $post_id,
-				'author_id'         => $author_id,
+				'author_id'       => $author_id,
 				'user_id'         => $user_id, 
 				'name'            => $name,
 				'tradesman_email' => $tradesman_email,
@@ -97,21 +97,41 @@ class AJAX extends Base {
 	
 		global $wpdb;
 	
-		$job_id = intval( $_POST['job_id'] );
-		$job_status = sanitize_text_field( $_POST['job_status'] );
-	
-		// Update the job status in the database
-		$table_name = $wpdb->prefix . 'trade_job_submission';
-		$updated = $wpdb->update(
-			$table_name,
-			array( 'status' => $job_status ),
-			array( 'post_id' => $job_id ),
-			array( '%s' ),
-			array( '%d' )
-		);
-	
+		$job_id 		= intval( $_POST['job_id'] );
+		$job_status 	= sanitize_text_field( $_POST['job_status'] );
+		$table_name 	= $wpdb->prefix . 'trade_job_submission';
+		$updated 		= $wpdb->update(
+				$table_name,
+				array( 'status' => $job_status ),
+				array( 'post_id' => $job_id ),
+				array( '%s' ),
+				array( '%d' )
+			);
+
+		if( $job_status === 'complete' || $job_status === 'hired' ) {
+			$post = array(
+				'ID'           => $job_id,
+				'post_status'  => 'closed',
+			);
+		
+			wp_update_post( $post );
+		}
+		else {
+			$post = array(
+				'ID'           => $job_id,
+				'post_status'  => 'publish'
+			);
+		
+			wp_update_post( $post );
+		}
+
 		if ( $updated !== false ) {
-			wp_send_json_success( array( 'message' => 'Job status updated.' ) );
+			$data = [
+				'status' => 'success',
+				'message' => 'Your request has been submitted successfully!',
+				'status' => $job_status
+			];
+			wp_send_json_success( $data );
 		} else {
 			wp_send_json_error( array( 'message' => 'Failed to update job status.' ) );
 		}

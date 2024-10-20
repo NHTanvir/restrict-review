@@ -1,73 +1,80 @@
 let pc_modal = (show = true) => {
     if (show) {
-        jQuery('#plugin-client-modal').show();
+        jQuery("#plugin-client-modal").show();
     } else {
-        jQuery('#plugin-client-modal').hide();
+        jQuery("#plugin-client-modal").hide();
     }
-}
-jQuery(function($){
-    $(document).ready(function() {
-
+};
+jQuery(function ($) {
+    $(document).ready(function () {
         var unviewedCount = WPPRR.unviewedCount;
 
-        var menuItemLink = $('.jet-profile-menu__item-link:contains("Quotations")');
-        
-        if (unviewedCount > 0) {
-            menuItemLink.css('position', 'relative');
-            menuItemLink.attr('data-count', unviewedCount); 
-        } else {
-            menuItemLink.addClass('hide-unviewed-count');
-        }
-        
+        var menuItemLink = $(
+            '.jet-profile-menu__item-link:contains("Quotations")'
+        );
 
-        $(document).on('click', '.jet-form-builder__submit', function(e) {
-            var formData = $(this).closest('form').serialize(); 
-            formData += '&action=trade_job_submission'; 
-            formData += '&_wpnonce=' + WPPRR._wpnonce; 
+        if (unviewedCount > 0) {
+            menuItemLink.css("position", "relative");
+            menuItemLink.attr("data-count", unviewedCount);
+        } else {
+            menuItemLink.addClass("hide-unviewed-count");
+        }
+
+        $(document).on("click", ".jet-form-builder__submit", function (e) {
+            var formData = $(this).closest("form").serialize();
+            formData += "&action=trade_job_submission";
+            formData += "&_wpnonce=" + WPPRR._wpnonce;
 
             $.ajax({
-                type: 'POST',
-                url: WPPRR.ajaxurl, 
+                type: "POST",
+                url: WPPRR.ajaxurl,
                 data: formData,
-                success: function(response) {
+                success: function (response) {
                     if (response.success) {
                         console.log(response.data);
                     } else {
                         console.log(response.data);
                     }
                 },
-                error: function() {
-                    console.log('An error occurred. Please try again.');
-                }
+                error: function () {
+                    console.log("An error occurred. Please try again.");
+                },
             });
         });
-        $('.update-status-btn').on('click', function(e) {
+        $(".update-status-btn").on("click", function (e) {
             e.preventDefault();
-    
+
             var button = $(this);
-            var jobId = button.data('job-id');
+            var jobId = button.data("job-id");
             var status = $('select[data-job-id="' + jobId + '"]').val();
-    
+            var select = button.siblings("select");
+
             $.ajax({
                 url: WPPRR.ajaxurl,
-                method: 'POST',
+                method: "POST",
                 data: {
-                    action: 'update_job_status',
+                    action: "update_job_status",
                     job_id: jobId,
                     job_status: status,
-                    _wpnonce: WPPRR._wpnonce
+                    _wpnonce: WPPRR._wpnonce,
                 },
-                success: function(response) {
+                success: function (response) {
                     if (response.success) {
-                        alert('Job status updated successfully!');
+                        if (response.data.status) {
+                            select
+                                .removeClass()
+                                .addClass("job-status-dropdown");
+                            select.addClass(response.data.status);
+                        }
+                        alert("Job status updated successfully!");
                     } else {
-                        alert('Failed to update job status.');
+                        alert("Failed to update job status.");
                     }
                 },
-                error: function(xhr, status, error) {
-                    console.error('AJAX error:', status, error);
-                    alert('An error occurred while updating the job status.');
-                }
+                error: function (xhr, status, error) {
+                    console.error("AJAX error:", status, error);
+                    alert("An error occurred while updating the job status.");
+                },
             });
         });
     });
