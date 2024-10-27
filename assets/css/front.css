@@ -118,22 +118,16 @@
     padding: 10px;
     text-align: left;
 }
-
-.application-table th:nth-child(1), 
-.application-table th:nth-child(2), 
-.application-table th:nth-child(4),
-.application-table td:nth-child(1), 
-.application-table td:nth-child(2), 
-.application-table td:nth-child(4) {
+.application-table td:not(:nth-child(4)) {
     width: 15%;
-    vertical-align : middle;
-}
-
-.application-table th:nth-child(3), 
-.application-table td:nth-child(3) {
-    width: auto;
-    word-wrap: break-word;
+    vertical-align: middle;
     word-break: break-word;
     white-space: normal;
 }
 
+.application-table th:nth-child(4), 
+.application-table td:nth-child(4) {
+    width: auto;
+    word-break: break-word;
+    white-space: normal;
+}
