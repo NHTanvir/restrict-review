@@ -129,3 +129,18 @@
     word-break: break-word;
     white-space: normal;
 }
+.feedback-table td:not(:nth-child(3)), 
+.feedback-received-table td:not(:nth-child(3)) {
+    width: 12%;
+    vertical-align: middle;
+    word-break: break-word;
+    white-space: normal;
+}
+
+.feedback-table th:nth-child(3), 
+.feedback-received-table td:nth-child(3) {
+    vertical-align: middle;
+    width: 52%;
+    word-break: break-word;
+    white-space: normal;
+}
