@@ -126,6 +126,7 @@
 .application-table td:nth-child(2), 
 .application-table td:nth-child(4) {
     width: 15%;
+    vertical-align : middle;
 }
 
 .application-table th:nth-child(3), 
