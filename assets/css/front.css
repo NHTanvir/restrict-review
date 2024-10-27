@@ -27,9 +27,6 @@
     display: flex;
     gap: 5px;
 }
-.job-status-dropdown {
-    width: 130px;
-}
 .job-status-dropdown.hiring,
 .job-status.hiring {
     background-color: orange;
@@ -119,7 +116,7 @@
     text-align: left;
 }
 .application-table td:not(:nth-child(4)) {
-    width: 15%;
+    width: 12%;
     vertical-align: middle;
     word-break: break-word;
     white-space: normal;
@@ -128,7 +125,7 @@
 .application-table th:nth-child(4), 
 .application-table td:nth-child(4) {
     vertical-align: middle;
-    width: auto;
+    width: 52%;
     word-break: break-word;
     white-space: normal;
 }
