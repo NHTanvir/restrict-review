@@ -108,3 +108,31 @@
 .filter-btn {
     margin-top: 10px;
 }
+
+.application-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.application-table th, .application-table td {
+    padding: 10px;
+    text-align: left;
+}
+
+.application-table th:nth-child(1), 
+.application-table th:nth-child(2), 
+.application-table th:nth-child(4),
+.application-table td:nth-child(1), 
+.application-table td:nth-child(2), 
+.application-table td:nth-child(4) {
+    width: 15%;
+}
+
+.application-table th:nth-child(3), 
+.application-table td:nth-child(3) {
+    width: auto;
+    word-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
+}
+
