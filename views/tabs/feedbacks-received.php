@@ -53,10 +53,38 @@ if ( empty( $results ) ) {
         </tr>
     </thead>
     <tbody>
-        <?php foreach ( $results as $row ) { ?>
-            <?php echo $row->rating; ?>
+        <?php foreach ( $results as $row ) {
+
+            global $wpdb;
+            $user_id    = $row->author;
+            $user       = get_user_by('ID', $user_id);
+            $username   = $user->user_login;
+            $user_url   = get_permalink( $row->post_id );
+            
+
+            $query = $wpdb->prepare("
+                SELECT posts.ID 
+                FROM {$wpdb->posts} AS posts
+                INNER JOIN {$wpdb->postmeta} AS postmeta ON posts.ID = postmeta.post_id 
+                WHERE posts.post_type = 'users' 
+                AND postmeta.meta_key = 'user_id' 
+                AND postmeta.meta_value = %s
+                LIMIT 1
+            ", $user_id);
+
+            $post_id = $wpdb->get_var($query);
+            $user_url = $post_id ? get_permalink($post_id) : '';
+            ?>
             <tr>
-                <td><?php echo esc_html( $row->author ); ?></td>
+                <td>
+                    <?php if ($user_url): ?>
+                        <a href="<?php echo esc_url($user_url); ?>" target="_blank">
+                            <?php echo esc_html($username); ?>
+                        </a>
+                    <?php else: ?>
+                        <?php echo esc_html($username); ?>
+                    <?php endif; ?>
+                </td>
                 <td><?php echo esc_html( $row->title ); ?></td>
                 <td><?php echo esc_html( $row->content ); ?></td>
                 <td>
