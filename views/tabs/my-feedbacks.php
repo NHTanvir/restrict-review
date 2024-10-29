@@ -11,7 +11,7 @@ if ( $current_user_id == 0 ) {
 $table_name = $wpdb->prefix . 'jet_reviews'; 
 
 $query = "
-    SELECT post_id, title, content, rating, date
+    SELECT *
     FROM $table_name
     WHERE author = %d
     ORDER BY date DESC
@@ -37,9 +37,24 @@ if ( empty( $results ) ) {
         </tr>
     </thead>
     <tbody>
-        <?php foreach ( $results as $row ) { ?>
+        <?php foreach ( $results as $row ) {
+            
+            $user_id    = get_post_meta( $row->post_id, 'user_id', true );
+            $user       = get_user_by('ID', $user_id);
+            $username   = $user->user_login;
+            $user_url   = get_permalink( $row->post_id );
+            
+            ?>
             <tr>
-                <td><?php echo esc_html( get_post_meta( $row->post_id, 'user_id', true ) ); ?></td>
+                <td>
+                    <?php if ($user_url): ?>
+                        <a href="<?php echo esc_url($user_url); ?>" target="_blank">
+                            <?php echo esc_html($username); ?>
+                        </a>
+                    <?php else: ?>
+                        <?php echo esc_html($username); ?>
+                    <?php endif; ?>
+                </td>
                 <td><?php echo esc_html( $row->title ); ?></td>
                 <td><?php echo esc_html( $row->content ); ?></td>
                 <td>
