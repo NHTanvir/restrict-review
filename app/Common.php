@@ -38,23 +38,34 @@ class Common extends Base {
 	public function my_custom_user_registration_action($user_id) {
 		$user_info = get_userdata($user_id);
 		
-		$post_data = array(
-			'post_title'   => $user_info->user_login,
-			'post_content' => '',
-			'post_status'  => 'publish',
-			'post_type'    => 'users',
-		);
+		$existing_posts = get_posts(array(
+			'post_type'   => 'users',
+			'meta_key'    => 'user_id',
+			'meta_value'  => $user_id,
+			'posts_per_page' => 1, 
+			'post_status' => 'publish',
+		));
 	
-		$post_id = wp_insert_post($post_data);
+		if (empty($existing_posts)) {
+			$post_data = array(
+				'post_title'   => $user_info->user_login,
+				'post_content' => '',
+				'post_status'  => 'publish',
+				'post_type'    => 'users',
+			);
 	
-		if ($post_id) {
-			update_post_meta($post_id, 'user_id', $user_id);
-			update_post_meta($post_id, 'email', $user_info->user_email);
-			update_post_meta($post_id, 'tr_user_name', $user_info->user_login);
-			$roles = $user_info->roles;
-			if (!empty($roles)) {
-				update_post_meta($post_id, 'user_role', $roles[0]);
+			$post_id = wp_insert_post($post_data);
+	
+			if ($post_id) {
+				update_post_meta($post_id, 'user_id', $user_id);
+				update_post_meta($post_id, 'email', $user_info->user_email);
+				update_post_meta($post_id, 'tr_user_name', $user_info->user_login);
+				$roles = $user_info->roles;
+				if (!empty($roles)) {
+					update_post_meta($post_id, 'user_role', $roles[0]);
+				}
 			}
 		}
-	}	
+	}
+		
 }
