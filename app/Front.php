@@ -41,6 +41,7 @@ class Front extends Base {
 		$unreviewed_jobs  		= 0;
 		$unviewed_hires 		= 0;
 		$unviewed_completions	= 0;
+		$is_client 				= 0;
 		$table_name 			= $wpdb->prefix . 'trade_job_submission';
 		$user_id 				= get_current_user_id();
 		$current_user 			= wp_get_current_user();
@@ -75,6 +76,7 @@ class Front extends Base {
 				0 
 			);
 			$unreviewed_jobs = $wpdb->get_col($unreviewed_jobs_query);
+			$is_client =1;
 		}
 
 
@@ -95,6 +97,7 @@ class Front extends Base {
 			'unreviewedJobs' 			=> $unreviewed_jobs, 
 			'unviewedHiresComplete'     => $unviewed_hires + $unviewed_completions,
 			'unviewedFeedback'   		=> $unviewed_feedback,
+			'is_client'					=> $is_client
 		];
 		wp_localize_script( $this->slug, 'WPPRR', apply_filters( "{$this->slug}-localized", $localized ) );
 	}

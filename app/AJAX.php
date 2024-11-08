@@ -147,7 +147,7 @@ class AJAX extends Base {
 				$wpdb->insert($notification_table, array(
 					'user_id' 	=> $user_id,
 					'job_id' 	=> $job_id,
-					'type' 		=> 'hired',
+					'type' 		=> 'complete',
 					'viewed' 	=> 0,
 				));
 			

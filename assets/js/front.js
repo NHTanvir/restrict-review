@@ -10,13 +10,10 @@ jQuery(function ($) {
         var unviewedCount = WPPRR.unviewedCount;
         var unviewedHiresComplete = WPPRR.unviewedHiresComplete;
         var unviewedFeedback = WPPRR.unviewedFeedback;
+        var unreviewedJobs = WPPRR.unreviewedJobs;
 
-        var menuItemLink = $(
-            '.jet-profile-menu__item-link:contains("Quotations")'
-        );
-        var ApplicationsmenuItemLink = $(
-            '.jet-profile-menu__item-link:contains("Applications")'
-        );
+        var menuItemLink = $( '.jet-profile-menu__item-link:contains("Quotations")');
+        var ApplicationsmenuItemLink = $( '.jet-profile-menu__item-link:contains("Applications")' );
         var FeedbackReceivedMenuItemLink = $('.jet-profile-menu__item-link:contains("Feedback Received")');
 
 
@@ -102,6 +99,24 @@ jQuery(function ($) {
         });
 
         if (WPPRR.unreviewedJobs && WPPRR.unreviewedJobs.length) {
+
+            var ReviewMenu;
+
+            if (WPPRR.is_client == 1) {
+                ReviewMenu = $('.jet-profile-menu__item-link:contains("Quotations")');
+            } else {
+                ReviewMenu = $('.jet-profile-menu__item-link:contains("Applications")');
+            }
+        
+            if (WPPRR.unreviewedJobs.length) {
+                ReviewMenu.css("position", "relative");
+                ReviewMenu.attr("data-count", WPPRR.unreviewedJobs.length);
+                ReviewMenu.removeClass("hide-unviewed-count");
+            } else {
+                ReviewMenu.addClass("hide-unviewed-count");
+            }
+
+            
             WPPRR.unreviewedJobs.forEach(function (jobId) {
                 var $tr = $('tr[data-review-id="' + jobId + '"]');
                 if ($tr.length) {
