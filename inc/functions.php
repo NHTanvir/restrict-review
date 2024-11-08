@@ -44,6 +44,3 @@ if ( ! function_exists( 'pc_get_user_or_author_id' ) ) :
 		return $result ? intval( $result ) : null;
 	}
 endif;
-	
-
-
