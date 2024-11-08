@@ -74,6 +74,23 @@ class Admin extends Base {
 			require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 			dbDelta($sql);
 		}
+
+		$table_name = $wpdb->prefix . 'trade_notifications';
+		if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
+			$charset_collate = $wpdb->get_charset_collate();
+			$sql = "CREATE TABLE $table_name (
+				id mediumint(9) NOT NULL AUTO_INCREMENT,
+				user_id bigint(20) UNSIGNED NOT NULL,
+				job_id bigint(20) UNSIGNED NOT NULL,
+				type varchar(50) NOT NULL,
+				viewed tinyint(1) NOT NULL DEFAULT 0, 
+				created_at datetime DEFAULT CURRENT_TIMESTAMP,
+				PRIMARY KEY (id)
+			) $charset_collate;";
+			require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+			dbDelta($sql);
+		}
+
 		
 
 		if( ! get_option( 'plugin-client_version' ) ){
