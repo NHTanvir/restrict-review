@@ -33,14 +33,13 @@ if ( ! function_exists( 'pc_get_user_or_author_id' ) ) :
 		if ( ! in_array( $id_type, array( 'user_id', 'author_id' ) ) ) {
 			return null;
 		}
-	
+
 		$query = $wpdb->prepare(
-			"SELECT $id_type FROM {$wpdb->prefix}trade_job_submission WHERE job_id = %d",
+			"SELECT $id_type FROM {$wpdb->prefix}trade_job_submission WHERE post_id = %d",
 			$job_id
 		);
 	
 		$result = $wpdb->get_var( $query );
-	
 		return $result ? intval( $result ) : null;
 	}
 endif;

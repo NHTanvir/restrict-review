@@ -8,9 +8,15 @@ let pc_modal = (show = true) => {
 jQuery(function ($) {
     $(document).ready(function () {
         var unviewedCount = WPPRR.unviewedCount;
+        var unviewedHiresComplete = WPPRR.unviewedHiresComplete;
+        // var unviewedFeedback = WPPRR.unviewedFeedback;
+    
 
         var menuItemLink = $(
             '.jet-profile-menu__item-link:contains("Quotations")'
+        );
+        var ApplicationsmenuItemLink = $(
+            '.jet-profile-menu__item-link:contains("Applications")'
         );
 
         if (unviewedCount > 0) {
@@ -18,6 +24,13 @@ jQuery(function ($) {
             menuItemLink.attr("data-count", unviewedCount);
         } else {
             menuItemLink.addClass("hide-unviewed-count");
+        }
+
+        if (unviewedHiresComplete > 0) {
+            ApplicationsmenuItemLink.css("position", "relative");
+            ApplicationsmenuItemLink.attr("data-count", unviewedHiresComplete);
+        } else {
+            ApplicationsmenuItemLink.addClass("hide-unviewed-count");
         }
 
         $(document).on("click", ".jet-form-builder__submit", function (e) {

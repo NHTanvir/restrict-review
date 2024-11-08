@@ -39,6 +39,8 @@ class Front extends Base {
 	public function enqueue_scripts() {
 		global $wpdb;
 		$unreviewed_jobs  		= 0;
+		$unviewed_hires 		= 0;
+		$unviewed_completions	= 0;
 		$table_name 			= $wpdb->prefix . 'trade_job_submission';
 		$user_id 				= get_current_user_id();
 		$current_user 			= wp_get_current_user();
@@ -55,7 +57,9 @@ class Front extends Base {
 				'complete',
 				0 
 			);
-			$unreviewed_jobs = $wpdb->get_col($unreviewed_jobs_query);
+			$unreviewed_jobs 		= $wpdb->get_col($unreviewed_jobs_query);
+			$unviewed_hires		 	= $this->count_unviewed_notifications_by_type('hired');
+			$unviewed_completions 	= $this->count_unviewed_notifications_by_type('completed');
 		}
 
 		
@@ -73,9 +77,7 @@ class Front extends Base {
 			$unreviewed_jobs = $wpdb->get_col($unreviewed_jobs_query);
 		}
 
-		$unviewed_quotes	 	= $this->count_unviewed_notifications_by_type('quote_received');
-		$unviewed_hires		 	= $this->count_unviewed_notifications_by_type('hired');
-		$unviewed_completions 	= $this->count_unviewed_notifications_by_type('completed');
+
 		$unviewed_feedback 		= $this->count_unviewed_notifications_by_type('feedback_received');
 				
 		$min = defined( 'WPPRR_DEBUG' ) && WPPRR_DEBUG ? '' : '.min';
@@ -87,14 +89,12 @@ class Front extends Base {
 		$unviewed_count = $this->count_unviewed_jobs();
 
 		$localized = [
-			'ajaxurl'       	=> admin_url( 'admin-ajax.php' ),
-			'_wpnonce'      	=> wp_create_nonce(),
-			'unviewedCount' 	=> $unviewed_count,
-			'unreviewedJobs' 	=> $unreviewed_jobs, 
-			'unviewedQuotes'     => $unviewed_quotes,
-			'unviewedHires'      => $unviewed_hires,
-			'unviewedCompletions'=> $unviewed_completions,
-			'unviewedFeedback'   => $unviewed_feedback,
+			'ajaxurl'       			=> admin_url( 'admin-ajax.php' ),
+			'_wpnonce'      			=> wp_create_nonce(),
+			'unviewedCount' 			=> $unviewed_count,
+			'unreviewedJobs' 			=> $unreviewed_jobs, 
+			'unviewedHiresComplete'     => $unviewed_hires + $unviewed_completions,
+			'unviewedFeedback'   		=> $unviewed_feedback,
 		];
 		wp_localize_script( $this->slug, 'WPPRR', apply_filters( "{$this->slug}-localized", $localized ) );
 	}
