@@ -1,7 +1,7 @@
 <?php
 global $wpdb;
 
-echo $current_user_id = get_current_user_id();
+$current_user_id = get_current_user_id();
 
 if ( $current_user_id == 0 ) {
     echo '<p>You must be logged in to view your received feedback.</p>';
