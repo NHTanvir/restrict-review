@@ -97,16 +97,19 @@ class AJAX extends Base {
 	
 		global $wpdb;
 	
-		$job_id 		= intval( $_POST['job_id'] );
-		$job_status 	= sanitize_text_field( $_POST['job_status'] );
-		$table_name 	= $wpdb->prefix . 'trade_job_submission';
-		$updated 		= $wpdb->update(
-				$table_name,
-				array( 'status' => $job_status ),
-				array( 'post_id' => $job_id ),
-				array( '%s' ),
-				array( '%d' )
-			);
+		$job_id 			= intval( $_POST['job_id'] );
+		$job_status 		= sanitize_text_field( $_POST['job_status'] );
+		$table_name 		= $wpdb->prefix . 'trade_job_submission';
+		$notification_table = $wpdb->prefix . 'trade_notifications';
+		$user_id 			= pc_get_user_or_author_id( $job_id, 'user_id' );
+		$author_id 			= pc_get_user_or_author_id( $job_id, 'author_id' );
+		$updated 			= $wpdb->update(
+					$table_name,
+					array( 'status' => $job_status ),
+					array( 'post_id' => $job_id ),
+					array( '%s' ),
+					array( '%d' )
+				);
 
 			if ($job_status === 'hired') {
 				$post = array(
@@ -115,6 +118,13 @@ class AJAX extends Base {
 				);
 			
 				wp_update_post($post);
+
+				$wpdb->insert($notification_table, array(
+					'user_id' 	=> $user_id,
+					'job_id' 	=> $job_id,
+					'type' 		=> 'hired',
+					'viewed' 	=> 0,
+				));
 			
 				$user_email = get_the_author_meta('user_email', $user_id);
 			
@@ -133,6 +143,13 @@ class AJAX extends Base {
 				);
 			
 				wp_update_post($post);
+
+				$wpdb->insert($notification_table, array(
+					'user_id' 	=> $user_id,
+					'job_id' 	=> $job_id,
+					'type' 		=> 'hired',
+					'viewed' 	=> 0,
+				));
 			
 				$author_email = get_the_author_meta('user_email', $author_id);
 				$user_email = get_the_author_meta('user_email', $user_id);
@@ -170,5 +187,90 @@ class AJAX extends Base {
 			wp_send_json_error( array( 'message' => 'Failed to update job status.' ) );
 		}
 	}
+
+	public function update_job_statuss() {
+		if (!isset($_POST['_wpnonce']) || !wp_verify_nonce($_POST['_wpnonce'])) {
+			wp_send_json_error('Invalid nonce verification');
+			wp_die();
+		}
+	
+		global $wpdb;
+		$job_id = intval($_POST['job_id']);
+		$job_status = sanitize_text_field($_POST['job_status']);
+		$table_name = $wpdb->prefix . 'trade_job_submission';
+		$notification_table = $wpdb->prefix . 'trade_notifications';
+	
+		$updated = $wpdb->update(
+			$table_name,
+			array('status' => $job_status),
+			array('post_id' => $job_id),
+			array('%s'),
+			array('%d')
+		);
+	
+		if ($updated !== false) {
+			// Fetch author and user IDs
+			$author_id = get_post_field('post_author', $job_id);
+			$user_id = get_post_meta($job_id, 'user_id', true);
+	
+			// Handle notifications for different statuses
+			switch ($job_status) {
+				case 'hired':
+					// Notification for tradesperson when hired
+					$message = 'You have been hired for the job ID ' . $job_id . '.';
+					$wpdb->insert($notification_table, array(
+						'user_id' => $user_id,
+						'job_id' => $job_id,
+						'type' => 'hired',
+						'message' => $message,
+						'viewed' => 0,
+					));
+					break;
+	
+				case 'complete':
+					// Notification for both homeowner and tradesperson when job is completed
+					$message = 'Job ID ' . $job_id . ' has been marked as completed. Please provide a review.';
+					$wpdb->insert($notification_table, array(
+						'user_id' => $author_id,
+						'job_id' => $job_id,
+						'type' => 'complete',
+						'message' => $message,
+						'viewed' => 0,
+					));
+					$wpdb->insert($notification_table, array(
+						'user_id' => $user_id,
+						'job_id' => $job_id,
+						'type' => 'complete',
+						'message' => $message,
+						'viewed' => 0,
+					));
+					break;
+	
+				case 'feedback_received':
+					// Notification when feedback is received
+					$message = 'You have received feedback on job ID ' . $job_id . '.';
+					$wpdb->insert($notification_table, array(
+						'user_id' => $user_id,
+						'job_id' => $job_id,
+						'type' => 'feedback_received',
+						'message' => $message,
+						'viewed' => 0,
+					));
+					break;
+	
+				default:
+					break;
+			}
+	
+			wp_send_json_success(array(
+				'status' => 'success',
+				'message' => 'Your request has been submitted successfully!',
+				'status' => $job_status,
+			));
+		} else {
+			wp_send_json_error(array('message' => 'Failed to update job status.'));
+		}
+	}
+	
 
 }

@@ -18,4 +18,32 @@ function pc_site_url() {
 }
 endif;
 
+/**
+ * Retrieves the user or author ID based on job ID.
+ *
+ * @param int $job_id The job ID to search for.
+ * @param string $id_type The type of ID to retrieve ('user_id' or 'author_id').
+ * 
+ * @return int|null The requested ID or null if not found.
+ */
+if ( ! function_exists( 'pc_get_user_or_author_id' ) ) :
+	function pc_get_user_or_author_id( $job_id, $id_type ) {
+		global $wpdb;
+	
+		if ( ! in_array( $id_type, array( 'user_id', 'author_id' ) ) ) {
+			return null;
+		}
+	
+		$query = $wpdb->prepare(
+			"SELECT $id_type FROM {$wpdb->prefix}trade_job_submission WHERE job_id = %d",
+			$job_id
+		);
+	
+		$result = $wpdb->get_var( $query );
+	
+		return $result ? intval( $result ) : null;
+	}
+	endif;
+	
+
 
