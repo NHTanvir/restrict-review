@@ -41,19 +41,24 @@ class Front extends Base {
 		$unreviewed_jobs  		= 0;
 		$table_name 			= $wpdb->prefix . 'trade_job_submission';
 		$user_id 				= get_current_user_id();
-		if ( current_user_can( 'tradesman' ) ) {
+		$current_user 			= wp_get_current_user();
+		$required_roles 		= array( 'tradesman', '1-day-membership', '1-week-plan', '1-month-plan' );
+		if ( array_intersect( $required_roles, $current_user->roles ) ) {
+			// Proceed with the query
 			$unreviewed_jobs_query = $wpdb->prepare(
 				"SELECT post_id 
-				 FROM $table_name 
-				 WHERE user_id = %d 
-				 AND status = %s 
-				 AND user_review = %d", 
+				FROM $table_name 
+				WHERE user_id = %d 
+				AND status = %s 
+				AND user_review = %d", 
 				$user_id,
 				'complete',
 				0 
 			);
 			$unreviewed_jobs = $wpdb->get_col($unreviewed_jobs_query);
 		}
+
+		
 		if ( current_user_can( 'client' ) ) {
 			$unreviewed_jobs_query = $wpdb->prepare(
 				"SELECT post_id 
