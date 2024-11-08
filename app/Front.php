@@ -80,7 +80,7 @@ class Front extends Base {
 		}
 
 
-		$unviewed_feedback 		= $this->count_unviewed_notifications_by_type('feedback_received');
+		$unviewed_feedback 		= $this->count_unviewed_notifications_by_type('review');
 				
 		$min = defined( 'WPPRR_DEBUG' ) && WPPRR_DEBUG ? '' : '.min';
 

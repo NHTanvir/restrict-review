@@ -1,12 +1,21 @@
 <?php
 global $wpdb;
 
-$current_user_id = get_current_user_id();
+echo $current_user_id = get_current_user_id();
 
 if ( $current_user_id == 0 ) {
     echo '<p>You must be logged in to view your received feedback.</p>';
     return;
 }
+
+
+$notification_table 	= $wpdb->prefix . 'trade_notifications';
+$wpdb->update(
+    $notification_table,  // Table name
+    ['viewed' => 1],      // Data to update
+    ['user_id' => $current_user_id, 'type' => 'review']  // Conditions to match user_id and type
+);
+
 
 // Get all post IDs where the current user is the owner (meta_key 'user_id')
 $post_ids = $wpdb->get_col( $wpdb->prepare( "
@@ -39,13 +48,6 @@ if ( empty( $results ) ) {
     echo '<p>No feedback received for your posts.</p>';
     return;
 }
-
-$notification_table 	= $wpdb->prefix . 'trade_notifications';
-$wpdb->update(
-    $notification_table,  // Table name
-    ['viewed' => 1],      // Data to update
-    ['user_id' => $current_user_id, 'type' => 'review']  // Conditions to match user_id and type
-);
 
 // Display the results in a table
 ?>
