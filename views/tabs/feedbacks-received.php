@@ -40,6 +40,13 @@ if ( empty( $results ) ) {
     return;
 }
 
+$notification_table 	= $wpdb->prefix . 'trade_notifications';
+$wpdb->update(
+    $notification_table,  // Table name
+    ['viewed' => 1],      // Data to update
+    ['user_id' => $current_user_id, 'type' => 'review']  // Conditions to match user_id and type
+);
+
 // Display the results in a table
 ?>
 <table class="feedback-received-table" border="1" cellpadding="10" cellspacing="0">

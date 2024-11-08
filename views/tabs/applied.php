@@ -51,6 +51,18 @@ $query = $wpdb->prepare($query, $params);
 $results = $wpdb->get_results($query);
 
 
+
+$notification_table = $wpdb->prefix . 'trade_notifications';
+
+$wpdb->update(
+    $notification_table, 
+    ['viewed' => 1],   
+    [
+        'user_id' => $current_user_id, 
+        'type' => ['complete', 'hired']  
+    ]
+);
+
 ?>
 
 <!-- Filters -->
