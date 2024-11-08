@@ -54,14 +54,23 @@ $results = $wpdb->get_results($query);
 
 $notification_table = $wpdb->prefix . 'trade_notifications';
 
-$wpdb->update(
-    $notification_table, 
-    ['viewed' => 1],   
-    [
-        'user_id' => $current_user_id, 
-        'type' => ['complete', 'hired']  
-    ]
-);
+// List of types you want to match
+$types = ['complete', 'hired'];  
+
+// Create placeholders for the types
+$type_placeholders = implode(',', array_fill(0, count($types), '%s'));
+
+// Prepare the SQL query
+$sql = "
+    UPDATE $notification_table
+    SET viewed = %d
+    WHERE user_id = %d
+    AND type IN ($type_placeholders)
+";
+
+// Execute the query with the proper parameters
+$wpdb->query($wpdb->prepare($sql, 1, $current_user_id, ...$types));
+
 
 ?>
 
