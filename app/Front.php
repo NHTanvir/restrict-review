@@ -67,7 +67,12 @@ class Front extends Base {
 			);
 			$unreviewed_jobs = $wpdb->get_col($unreviewed_jobs_query);
 		}
-		
+
+		$unviewed_quotes	 	= $this->count_unviewed_notifications_by_type('quote_received');
+		$unviewed_hires		 	= $this->count_unviewed_notifications_by_type('hired');
+		$unviewed_completions 	= $this->count_unviewed_notifications_by_type('completed');
+		$unviewed_feedback 		= $this->count_unviewed_notifications_by_type('feedback_received');
+				
 		$min = defined( 'WPPRR_DEBUG' ) && WPPRR_DEBUG ? '' : '.min';
 
 		wp_enqueue_style( $this->slug, plugins_url( "/assets/css/front{$min}.css", WPPRR ), '', time(), 'all' );
@@ -81,6 +86,10 @@ class Front extends Base {
 			'_wpnonce'      	=> wp_create_nonce(),
 			'unviewedCount' 	=> $unviewed_count,
 			'unreviewedJobs' 	=> $unreviewed_jobs, 
+			'unviewedQuotes'     => $unviewed_quotes,
+			'unviewedHires'      => $unviewed_hires,
+			'unviewedCompletions'=> $unviewed_completions,
+			'unviewedFeedback'   => $unviewed_feedback,
 		];
 		wp_localize_script( $this->slug, 'WPPRR', apply_filters( "{$this->slug}-localized", $localized ) );
 	}
@@ -97,6 +106,25 @@ class Front extends Base {
 			 AND author_id = %d",
 			0, 
 			$current_user_id 
+		);
+	
+		return $wpdb->get_var($query);
+	}
+	
+	public function count_unviewed_notifications_by_type($type) {
+		global $wpdb;
+		$current_user_id = get_current_user_id();
+		$table_name = $wpdb->prefix . 'trade_notifications';
+	
+		$query = $wpdb->prepare(
+			"SELECT COUNT(*)
+			 FROM $table_name
+			 WHERE viewed = %d
+			 AND user_id = %d
+			 AND type = %s",
+			0,
+			$current_user_id,
+			$type
 		);
 	
 		return $wpdb->get_var($query);
