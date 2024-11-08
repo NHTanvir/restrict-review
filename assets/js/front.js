@@ -9,8 +9,7 @@ jQuery(function ($) {
     $(document).ready(function () {
         var unviewedCount = WPPRR.unviewedCount;
         var unviewedHiresComplete = WPPRR.unviewedHiresComplete;
-        // var unviewedFeedback = WPPRR.unviewedFeedback;
-    
+        var unviewedFeedback = WPPRR.unviewedFeedback;
 
         var menuItemLink = $(
             '.jet-profile-menu__item-link:contains("Quotations")'
@@ -18,6 +17,9 @@ jQuery(function ($) {
         var ApplicationsmenuItemLink = $(
             '.jet-profile-menu__item-link:contains("Applications")'
         );
+        var FeedbackReceivedMenuItemLink = $('.jet-profile-menu__item-link:contains("Feedback Received")');
+
+
 
         if (unviewedCount > 0) {
             menuItemLink.css("position", "relative");
@@ -32,6 +34,14 @@ jQuery(function ($) {
         } else {
             ApplicationsmenuItemLink.addClass("hide-unviewed-count");
         }
+
+        if (unviewedFeedback > 0) {
+            FeedbackReceivedMenuItemLink.css("position", "relative");
+            FeedbackReceivedMenuItemLink.attr("data-count", unviewedFeedback);
+        } else {
+            FeedbackReceivedMenuItemLink.addClass("hide-unviewed-count");
+        }
+
 
         $(document).on("click", ".jet-form-builder__submit", function (e) {
             var formData = $(this).closest("form").serialize();
