@@ -54,7 +54,7 @@ if ( empty( $results ) ) {
 <table class="feedback-received-table" border="1" cellpadding="10" cellspacing="0">
     <thead>
         <tr>
-            <th>author</th>
+            <th>Author</th>
             <th>Title</th>
             <th>Content</th>
             <th>Rating</th>
