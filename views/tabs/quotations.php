@@ -91,8 +91,8 @@ if (empty($results)) {
     <thead>
         <tr>
             <th>Job Title</th>
-            <th>Name</th>
-            <th>Tradesman Email</th>
+            <th>Tradesperson Name</th>
+            <th>Tradesperson Email</th>
             <th>Message</th>
             <th>Status</th> 
         </tr>
