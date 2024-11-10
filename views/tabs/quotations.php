@@ -102,6 +102,7 @@ if (empty($results)) {
         foreach ($results as $row) {
             $job_url = get_permalink($row->post_id);
             $title = get_the_title($row->post_id);
+            $title = str_replace('Private: ', '', $title); 
             
             global $wpdb;
 
