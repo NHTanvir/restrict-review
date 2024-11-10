@@ -110,64 +110,64 @@ class AJAX extends Base {
 					array( '%s' ),
 					array( '%d' )
 				);
+		if ($job_status === 'hired') {
+			update_option('job_statusjob_status', $job_status);
+			$post = array(
+				'ID' => $job_id,
+				'post_status' => 'private',
+			);
+			update_option('postpost', $post);
+			wp_update_post($post);
 
-			if ($job_status === 'hired') {
-				$post = array(
-					'ID' => $job_id,
-					'post_status' => 'closed',
-				);
-			
-				wp_update_post($post);
-
-				$wpdb->insert($notification_table, array(
-					'user_id' 	=> $user_id,
-					'job_id' 	=> $job_id,
-					'type' 		=> 'hired',
-					'viewed' 	=> 0,
-				));
-			
-				$user_email = get_the_author_meta('user_email', $user_id);
-			
-				$subject = 'You Are Hired!';
-				$message = 'Congratulations! You have been hired for the job with ID ' . $job_id . '.';
-			
-				if (!empty($user_email)) {
-					wp_mail($user_email, $subject, $message);
-				}
+			$wpdb->insert($notification_table, array(
+				'user_id' 	=> $user_id,
+				'job_id' 	=> $job_id,
+				'type' 		=> 'hired',
+				'viewed' 	=> 0,
+			));
+		
+			$user_email = get_the_author_meta('user_email', $user_id);
+		
+			$subject = 'You Are Hired!';
+			$message = 'Congratulations! You have been hired for the job with ID ' . $job_id . '.';
+		
+			if (!empty($user_email)) {
+				wp_mail($user_email, $subject, $message);
 			}
-			
-			if ($job_status === 'complete') {
-				$post = array(
-					'ID' => $job_id,
-					'post_status' => 'closed',
-				);
-			
-				wp_update_post($post);
+		}
+		
+		if ($job_status === 'complete') {
+			$post = array(
+				'ID' => $job_id,
+				'post_status' => 'private',
+			);
+		
+			wp_update_post($post);
 
-				$wpdb->insert($notification_table, array(
-					'user_id' 	=> $user_id,
-					'job_id' 	=> $job_id,
-					'type' 		=> 'complete',
-					'viewed' 	=> 0,
-				));
-			
-				$author_email = get_the_author_meta('user_email', $author_id);
-				$user_email = get_the_author_meta('user_email', $user_id);
-			
-				$subject = 'Job Completion - Review Request';
-				$message = 'The job with ID ' . $job_id . ' has been completed. Please take a moment to provide your review.';
-			
-				if (!empty($author_email)) {
-					wp_mail($author_email, $subject, $message);
-				}
-			
-				// Send email to the user
-				if (!empty($user_email)) {
-					wp_mail($user_email, $subject, $message);
-				}
+			$wpdb->insert($notification_table, array(
+				'user_id' 	=> $user_id,
+				'job_id' 	=> $job_id,
+				'type' 		=> 'complete',
+				'viewed' 	=> 0,
+			));
+		
+			$author_email = get_the_author_meta('user_email', $author_id);
+			$user_email = get_the_author_meta('user_email', $user_id);
+		
+			$subject = 'Job Completion - Review Request';
+			$message = 'The job with ID ' . $job_id . ' has been completed. Please take a moment to provide your review.';
+		
+			if (!empty($author_email)) {
+				wp_mail($author_email, $subject, $message);
 			}
+		
+			// Send email to the user
+			if (!empty($user_email)) {
+				wp_mail($user_email, $subject, $message);
+			}
+		}
 			
-		if ( $job_status != 'complete' || $job_status != 'hired' ) {
+		if ( $job_status == 'hiring' ) {
 			$post = array(
 				'ID'           => $job_id,
 				'post_status'  => 'publish'
