@@ -43,3 +43,9 @@ if ( ! function_exists( 'pc_get_user_or_author_id' ) ) :
 		return $result ? intval( $result ) : null;
 	}
 endif;
+
+add_filter('the_title', 'remove_private_prefix');
+function remove_private_prefix($title) {
+    $title = str_replace(['Private: ', 'Protected: '], '', $title);
+    return $title;
+}
