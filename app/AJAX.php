@@ -39,16 +39,24 @@ class AJAX extends Base {
 			wp_die();
 		}
 
-		$name = sanitize_text_field($_POST['name']);
-		$tradesman_email = sanitize_email($_POST['tradesman_Email']);
-		$subject = sanitize_text_field($_POST['subject']);
-		$field = sanitize_text_field($_POST['Field']);
-		$sub_field = sanitize_text_field($_POST['Sub-field']);
-		$message = sanitize_textarea_field($_POST['email_description']);
-		$post_id = intval($_POST['post_id']);
-		$author_id  = get_post_field('post_author', $post_id);
-		$user_id = get_current_user_id();
-		$table_name = $wpdb->prefix . 'trade_job_submission';
+		$required_fields = ['name', 'tradesman_Email', 'subject', 'Field', 'Sub-field', 'email_description', 'post_id'];
+		foreach ( $required_fields as $field ) {
+			if ( empty( $_POST[$field] ) ) {
+				wp_send_json_error("The field $field is required.");
+				wp_die();
+			}
+		}
+
+		$name 				= sanitize_text_field( $_POST['name'] );
+		$tradesman_email 	= sanitize_email( $_POST['tradesman_Email'] );
+		$subject 			= sanitize_text_field( $_POST['subject'] );
+		$field 				= sanitize_text_field( $_POST['Field'] );
+		$sub_field 			= sanitize_text_field( $_POST['Sub-field'] );
+		$message 			= sanitize_textarea_field( $_POST['email_description'] );
+		$post_id 			= intval( $_POST['post_id'] );
+		$author_id  		= get_post_field('post_author', $post_id);
+		$user_id 			= get_current_user_id();
+		$table_name 		= $wpdb->prefix . 'trade_job_submission';
 	
 		$inserted = $wpdb->insert(
 			$table_name,
@@ -111,12 +119,10 @@ class AJAX extends Base {
 					array( '%d' )
 				);
 		if ($job_status === 'hired') {
-			update_option('job_statusjob_status', $job_status);
 			$post = array(
 				'ID' => $job_id,
 				'post_status' => 'private',
 			);
-			update_option('postpost', $post);
 			wp_update_post($post);
 
 			$wpdb->insert($notification_table, array(
@@ -130,7 +136,7 @@ class AJAX extends Base {
 		
 			$subject = 'You Are Hired!';
 			$message = 'Congratulations! You have been hired for the job with ID ' . $job_id . '.';
-		
+			$message = str_replace('&nbsp;', ' ', $message);
 			if (!empty($user_email)) {
 				wp_mail($user_email, $subject, $message);
 			}
@@ -156,7 +162,7 @@ class AJAX extends Base {
 		
 			$subject = 'Job Completion - Review Request';
 			$message = 'The job with ID ' . $job_id . ' has been completed. Please take a moment to provide your review.';
-		
+			$message = str_replace('&nbsp;', ' ', $message);
 			if (!empty($author_email)) {
 				wp_mail($author_email, $subject, $message);
 			}
