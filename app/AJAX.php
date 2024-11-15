@@ -156,6 +156,20 @@ class AJAX extends Base {
 				'type' 		=> 'complete',
 				'viewed' 	=> 0,
 			));
+
+			$wpdb->insert($notification_table, array(
+				'user_id' 	=> $user_id,
+				'job_id' 	=> $job_id,
+				'type' 		=> 'review',
+				'viewed' 	=> 0,
+			));
+
+			$wpdb->insert($notification_table, array(
+				'user_id' 	=> $author_id,
+				'job_id' 	=> $job_id,
+				'type' 		=> 'review',
+				'viewed' 	=> 0,
+			));
 		
 			$author_email = get_the_author_meta('user_email', $author_id);
 			$user_email = get_the_author_meta('user_email', $user_id);
