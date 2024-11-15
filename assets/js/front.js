@@ -7,6 +7,16 @@ let pc_modal = (show = true) => {
 };
 jQuery(function ($) {
     $(document).ready(function () {
+
+        $("a[href*='/users/']").on("click", function (event) {
+            event.preventDefault();
+            var reviewRow = $(this).closest("tr");
+            var jobId = reviewRow.data("review-id");
+            document.cookie = "job_id=" + jobId + "; path=/;";
+            window.location.href = $(this).attr("href");
+        });
+
+
         var unviewedCount = WPPRR.unviewedCount;
         var unviewedHiresComplete = WPPRR.unviewedHiresComplete;
         var unviewedFeedback = WPPRR.unviewedFeedback;

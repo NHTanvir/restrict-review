@@ -47,40 +47,19 @@ class Front extends Base {
 		$current_user 			= wp_get_current_user();
 		$required_roles 		= array( 'tradesman', '1-day-membership', '1-week-plan', '1-month-plan' );
 		if ( array_intersect( $required_roles, $current_user->roles ) ) {
-			// Proceed with the query
-			$unreviewed_jobs_query = $wpdb->prepare(
-				"SELECT post_id 
-				FROM $table_name 
-				WHERE user_id = %d 
-				AND status = %s 
-				AND user_review = %d", 
-				$user_id,
-				'complete',
-				0 
-			);
-			$unreviewed_jobs 		= $wpdb->get_col($unreviewed_jobs_query);
+
 			$unviewed_hires		 	= $this->count_unviewed_notifications_by_type('hired');
 			$unviewed_completions 	= $this->count_unviewed_notifications_by_type('completed');
 		}
 
 		
 		if ( current_user_can( 'client' ) ) {
-			$unreviewed_jobs_query = $wpdb->prepare(
-				"SELECT post_id 
-				 FROM $table_name 
-				 WHERE author_id = %d 
-				 AND status = %s 
-				 AND author_review = %d", 
-				$user_id,
-				'complete',
-				0 
-			);
-			$unreviewed_jobs = $wpdb->get_col($unreviewed_jobs_query);
+
 			$is_client =1;
 		}
 
-
-		$unviewed_feedback 		= $this->count_unviewed_notifications_by_type('review');
+		$unviewed_jobs 		= $this->get_job_ids_by_type('review_pending');
+		$unviewed_feedback 	= $this->count_unviewed_notifications_by_type('review');
 				
 		$min = defined( 'WPPRR_DEBUG' ) && WPPRR_DEBUG ? '' : '.min';
 
@@ -94,7 +73,7 @@ class Front extends Base {
 			'ajaxurl'       			=> admin_url( 'admin-ajax.php' ),
 			'_wpnonce'      			=> wp_create_nonce(),
 			'unviewedCount' 			=> $unviewed_count,
-			'unreviewedJobs' 			=> $unreviewed_jobs, 
+			'unreviewedJobs' 			=> $unviewed_jobs, 
 			'unviewedHiresComplete'     => $unviewed_hires + $unviewed_completions,
 			'unviewedFeedback'   		=> $unviewed_feedback,
 			'is_client'					=> $is_client
@@ -136,6 +115,26 @@ class Front extends Base {
 		);
 	
 		return $wpdb->get_var($query);
+	}
+	
+
+	public function get_job_ids_by_type($type) {
+		global $wpdb;
+		$current_user_id = get_current_user_id();
+		$table_name = $wpdb->prefix . 'trade_notifications';
+	
+		$query = $wpdb->prepare(
+			"SELECT job_id
+			 FROM $table_name
+			 WHERE viewed = %d
+			 AND user_id = %d
+			 AND type = %s",
+			0,
+			$current_user_id,
+			$type
+		);
+	
+		return $wpdb->get_col($query);
 	}
 	
 
