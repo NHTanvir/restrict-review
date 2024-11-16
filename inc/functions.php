@@ -51,18 +51,20 @@ function remove_private_prefix($title) {
 }
 
 
-add_filter('post_class', 'add_tradesman_role_class', 10, 3);
-function add_tradesman_role_class($classes, $class, $post_id) {
+add_filter('post_class', 'add_custom_user_role_classes', 10, 3);
+function add_custom_user_role_classes($classes, $class, $post_id) {
     $user_id = get_post_meta($post_id, 'user_id', true);
 
     if ($user_id) {
         $user = get_user_by('id', $user_id);
 
         if ($user) {
+            if (in_array('client', $user->roles)) {
+                $classes[] = 'has-client-role';
+            }
             $specific_roles = array('tradesman', '1-day-membership', '1-week-plan', '1-month-plan');
-
             if (array_intersect($specific_roles, $user->roles)) {
-                $classes[] = 'tradesman';
+                $classes[] = 'has-tradesman-role';
             }
         }
     }
