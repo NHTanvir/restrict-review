@@ -49,20 +49,23 @@ function remove_private_prefix($title) {
     $title = str_replace(['Private: ', 'Protected: '], '', $title);
     return $title;
 }
-add_filter('post_class', 'add_client_role_class', 10, 3);
-function add_client_role_class($classes, $class, $post_id) {
-    // Check if the post has the 'user_id' post meta
+
+
+add_filter('post_class', 'add_tradesman_role_class', 10, 3);
+function add_tradesman_role_class($classes, $class, $post_id) {
     $user_id = get_post_meta($post_id, 'user_id', true);
-    
-    // If user_id exists, get the user and check their role
+
     if ($user_id) {
         $user = get_user_by('id', $user_id);
-        if ($user && in_array('client', $user->roles)) {
-            // Add a custom class if the user has the 'client' role
-            $classes[] = 'has-client-role';
+
+        if ($user) {
+            $specific_roles = array('tradesman', '1-day-membership', '1-week-plan', '1-month-plan');
+
+            if (array_intersect($specific_roles, $user->roles)) {
+                $classes[] = 'tradesman';
+            }
         }
     }
-    
+
     return $classes;
 }
-
