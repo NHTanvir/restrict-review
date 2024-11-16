@@ -136,13 +136,18 @@ if (empty($results)) {
 
             $post_id = $wpdb->get_var($query);
             $post_url = $post_id ? get_permalink($post_id) : '';
+            $post_status = $post_id ? get_post_status($post_id) : '';
 
             ?>
             <tr data-review-id="<?php echo esc_attr($row->post_id); ?>">
                 <td>
-                    <a href="<?php echo esc_url($job_url); ?>" target="_blank">
+                    <?php if ($post_status === 'private') : ?>
                         <?php echo esc_html($title); ?>
-                    </a>
+                    <?php else : ?>
+                        <a href="<?php echo esc_url($job_url); ?>" target="_blank">
+                            <?php echo esc_html($title); ?>
+                        </a>
+                    <?php endif; ?>
                 </td>
                 <td>
                     <?php if ($post_url): ?>
