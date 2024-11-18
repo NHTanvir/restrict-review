@@ -85,44 +85,34 @@ $updated_rows = $wpdb->query($update_query);
 if (empty($results)) {
     echo '<p>No quotations found.</p>';
     return;
-}?>
+}
+foreach ($results as $row) {
+    $job_url = get_permalink($row->post_id);
+    $title = get_the_title($row->post_id);
+    $title = str_replace('Private: ', '', $title); 
 
-<table class="application-table" border="1" cellpadding="10" cellspacing="0">
-    <thead>
-        <tr>
-            <th>Job Title</th>
-            <th>Tradesperson Name</th>
-            <th>Tradesperson Email</th>
-            <th>Message</th>
-            <th>Status</th> 
-        </tr>
-    </thead>
-    <tbody>
-        <?php
-        foreach ($results as $row) {
-            $job_url = get_permalink($row->post_id);
-            $title = get_the_title($row->post_id);
-            $title = str_replace('Private: ', '', $title); 
-            
-            global $wpdb;
+    global $wpdb;
 
-            $user_id = esc_attr($row->user_id);
+    $user_id = esc_attr($row->user_id);
 
-            $query = $wpdb->prepare("
-                SELECT posts.ID 
-                FROM {$wpdb->posts} AS posts
-                INNER JOIN {$wpdb->postmeta} AS postmeta ON posts.ID = postmeta.post_id 
-                WHERE posts.post_type = 'users' 
-                AND postmeta.meta_key = 'user_id' 
-                AND postmeta.meta_value = %s
-                LIMIT 1
-            ", $user_id);
+    $query = $wpdb->prepare("
+        SELECT posts.ID 
+        FROM {$wpdb->posts} AS posts
+        INNER JOIN {$wpdb->postmeta} AS postmeta ON posts.ID = postmeta.post_id 
+        WHERE posts.post_type = 'users' 
+        AND postmeta.meta_key = 'user_id' 
+        AND postmeta.meta_value = %s
+        LIMIT 1
+    ", $user_id);
 
-            $post_id = $wpdb->get_var($query);
-            $post_url = $post_id ? get_permalink($post_id) : '';
-            $post_status = $post_id ? get_post_status($post_id) : '';
-            ?>
-            <tr data-review-id="<?php echo esc_attr($row->post_id); ?>">
+    $post_id = $wpdb->get_var($query);
+    $post_url = $post_id ? get_permalink($post_id) : '';
+    $post_status = $post_id ? get_post_status($post_id) : '';
+?>
+    <table class="application-table" border="1" cellpadding="10" cellspacing="0" style="margin-bottom: 20px;">
+        <tbody>
+            <tr>
+                <td>Job Title</td>
                 <td>
                     <?php if ($post_status === 'private') : ?>
                         <?php echo esc_html($title); ?>
@@ -132,6 +122,9 @@ if (empty($results)) {
                         </a>
                     <?php endif; ?>
                 </td>
+            </tr>
+            <tr data-review-id="<?php echo esc_attr($row->post_id); ?>">
+                <td>Tradesperson Name</td>
                 <td>
                     <?php if ($post_url): ?>
                         <a href="<?php echo esc_url($post_url); ?>">
@@ -141,15 +134,24 @@ if (empty($results)) {
                         <?php echo esc_html($row->name); ?>
                     <?php endif; ?>
                 </td>
+            </tr>
+            <tr>
+                <td>Tradesperson Email</td>
                 <td><?php echo esc_html($row->tradesman_email); ?></td>
+            </tr>
+            <tr>
+                <td>Message</td>
                 <td><?php echo esc_html($row->message); ?></td>
-                <td style="text-align: center;">
+            </tr>
+            <tr>
+                <td>Status</td>
+                <td>
                     <select name="job_status" data-job-id="<?php echo esc_attr($row->post_id); ?>" class="job-status-dropdown <?php echo esc_attr($row->status); ?>">
                         <?php 
                         $status_options = ['hiring', 'hired', 'complete'];
                         foreach ($status_options as $status) {
                             $selected = ($row->status == $status) ? 'selected="selected"' : '';
-                            ?>
+                        ?>
                             <option value="<?php echo esc_attr($status); ?>" <?php echo $selected; ?>>
                                 <?php echo esc_html(ucfirst($status)); ?>
                             </option>
@@ -158,11 +160,12 @@ if (empty($results)) {
                     <button class="update-status-btn" data-job-id="<?php echo esc_attr($row->post_id); ?>">Update</button>
                 </td>
             </tr>
-            <?php
-        }
-        ?>
-    </tbody>
-</table>
+        </tbody>
+    </table>
+<?php
+}
+?>
+
 
 <script>
     var ajax_nonce = "<?php echo wp_create_nonce('update_job_status_nonce'); ?>";

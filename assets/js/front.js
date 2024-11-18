@@ -7,7 +7,6 @@ let pc_modal = (show = true) => {
 };
 jQuery(function ($) {
     $(document).ready(function () {
-
         $("a[href*='/users/']").on("click", function (event) {
             event.preventDefault();
             var reviewRow = $(this).closest("tr");
@@ -16,17 +15,20 @@ jQuery(function ($) {
             window.location.href = $(this).attr("href");
         });
 
-
         var unviewedCount = WPPRR.unviewedCount;
         var unviewedHiresComplete = WPPRR.unviewedHiresComplete;
         var unviewedFeedback = WPPRR.unviewedFeedback;
         var unreviewedJobs = WPPRR.unreviewedJobs;
 
-        var menuItemLink = $( '.jet-profile-menu__item-link:contains("Quotations")');
-        var ApplicationsmenuItemLink = $( '.jet-profile-menu__item-link:contains("Applications")' );
-        var FeedbackReceivedMenuItemLink = $('.jet-profile-menu__item-link:contains("Feedback Received")');
-
-
+        var menuItemLink = $(
+            '.jet-profile-menu__item-link:contains("Quotations")'
+        );
+        var ApplicationsmenuItemLink = $(
+            '.jet-profile-menu__item-link:contains("Applications")'
+        );
+        var FeedbackReceivedMenuItemLink = $(
+            '.jet-profile-menu__item-link:contains("Feedback Received")'
+        );
 
         if (unviewedCount > 0) {
             menuItemLink.css("position", "relative");
@@ -48,7 +50,6 @@ jQuery(function ($) {
         } else {
             FeedbackReceivedMenuItemLink.addClass("hide-unviewed-count");
         }
-
 
         $(document).on("click", ".jet-form-builder__submit", function (e) {
             var formData = $(this).closest("form").serialize();
@@ -109,15 +110,18 @@ jQuery(function ($) {
         });
 
         if (WPPRR.unreviewedJobs && WPPRR.unreviewedJobs.length) {
-
             var ReviewMenu;
 
             if (WPPRR.is_client == 1) {
-                ReviewMenu = $('.jet-profile-menu__item-link:contains("Quotations")');
+                ReviewMenu = $(
+                    '.jet-profile-menu__item-link:contains("Quotations")'
+                );
             } else {
-                ReviewMenu = $('.jet-profile-menu__item-link:contains("Applications")');
+                ReviewMenu = $(
+                    '.jet-profile-menu__item-link:contains("Applications")'
+                );
             }
-        
+
             if (WPPRR.unreviewedJobs.length) {
                 ReviewMenu.css("position", "relative");
                 ReviewMenu.attr("data-count", WPPRR.unreviewedJobs.length);
@@ -126,7 +130,6 @@ jQuery(function ($) {
                 ReviewMenu.addClass("hide-unviewed-count");
             }
 
-            
             WPPRR.unreviewedJobs.forEach(function (jobId) {
                 var $tr = $('tr[data-review-id="' + jobId + '"]');
                 if ($tr.length) {
@@ -135,8 +138,7 @@ jQuery(function ($) {
                         '<span class="review-message">Click username to give Review</span>'
                     ).css({
                         position: "absolute",
-                        left: "100px",
-                        top: "-15px",
+                        right: "10px",
                         zIndex: "10",
                         backgroundColor: "#ff0000",
                         color: "white",
