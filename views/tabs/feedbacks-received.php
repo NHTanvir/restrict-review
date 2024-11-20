@@ -48,43 +48,33 @@ if ( empty( $results ) ) {
     echo '<p>No feedback received for your posts.</p>';
     return;
 }
+foreach ( $results as $row ) {
 
-// Display the results in a table
-?>
-<table class="feedback-received-table" border="1" cellpadding="10" cellspacing="0">
-    <thead>
-        <tr>
-            <th>Author</th>
-            <th>Title</th>
-            <th>Content</th>
-            <th>Rating</th>
-            <th>Date</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php foreach ( $results as $row ) {
+    global $wpdb;
+    $user_id    = $row->author;
+    $user       = get_user_by('ID', $user_id);
+    $username   = $user->user_login;
+    $user_url   = get_permalink( $row->post_id );
+    
 
-            global $wpdb;
-            $user_id    = $row->author;
-            $user       = get_user_by('ID', $user_id);
-            $username   = $user->user_login;
-            $user_url   = get_permalink( $row->post_id );
-            
+    $query = $wpdb->prepare("
+        SELECT posts.ID 
+        FROM {$wpdb->posts} AS posts
+        INNER JOIN {$wpdb->postmeta} AS postmeta ON posts.ID = postmeta.post_id 
+        WHERE posts.post_type = 'users' 
+        AND postmeta.meta_key = 'user_id' 
+        AND postmeta.meta_value = %s
+        LIMIT 1
+    ", $user_id);
 
-            $query = $wpdb->prepare("
-                SELECT posts.ID 
-                FROM {$wpdb->posts} AS posts
-                INNER JOIN {$wpdb->postmeta} AS postmeta ON posts.ID = postmeta.post_id 
-                WHERE posts.post_type = 'users' 
-                AND postmeta.meta_key = 'user_id' 
-                AND postmeta.meta_value = %s
-                LIMIT 1
-            ", $user_id);
+    $post_id = $wpdb->get_var($query);
+    $user_url = $post_id ? get_permalink($post_id) : '';
 
-            $post_id = $wpdb->get_var($query);
-            $user_url = $post_id ? get_permalink($post_id) : '';
-            ?>
+    ?>
+    <table class="feedback-received-table" border="1" cellpadding="10" cellspacing="0">
+        <tbody>
             <tr>
+                <td>Autdor</td>
                 <td>
                     <?php if ($user_url): ?>
                         <a href="<?php echo esc_url($user_url); ?>" target="_blank">
@@ -94,8 +84,17 @@ if ( empty( $results ) ) {
                         <?php echo esc_html($username); ?>
                     <?php endif; ?>
                 </td>
+            </tr>
+            <tr>
+                <td>Title</td>
                 <td><?php echo esc_html( $row->title ); ?></td>
+            </tr>
+            <tr>
+                <td>Content</td>
                 <td><?php echo esc_html( $row->content ); ?></td>
+            </tr>
+            <tr>
+                <td>Rating</td>
                 <td>
                     <div class="jet-reviews-stars jet-reviews-stars--adjuster restrict-reviews-stars">
                         <?php 
@@ -123,9 +122,10 @@ if ( empty( $results ) ) {
                         ?>
                     </div>
                 </td>
-
+            </tr>
+            <tr>
+                <td>Date</td>
                 <td><?php echo esc_html( $row->date ); ?></td>
             </tr>
-        <?php } ?>
-    </tbody>
-</table>
+    </table>
+<?php } ?>
