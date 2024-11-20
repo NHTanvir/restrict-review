@@ -105,9 +105,10 @@ foreach ($results as $row) {
         LIMIT 1
     ", $user_id);
 
-    $post_id = $wpdb->get_var($query);
-    $post_url = $post_id ? get_permalink($post_id) : '';
-    $post_status = $post_id ? get_post_status($post_id) : '';
+    $post_id        = $wpdb->get_var($query);
+    $user_url       = $post_id ? get_permalink($post_id) : '';
+    $post_url       = $row->post_id ? get_permalink($row->post_id) : '';
+    $post_status    = $row->post_id ? get_post_status($row->post_id) : '';
 ?>
     <table class="application-table" border="1" cellpadding="10" cellspacing="0" style="margin-bottom: 20px;">
         <tbody>
@@ -126,8 +127,8 @@ foreach ($results as $row) {
             <tr data-review-id="<?php echo esc_attr($row->post_id); ?>">
                 <td>Tradesperson Name</td>
                 <td>
-                    <?php if ($post_url): ?>
-                        <a href="<?php echo esc_url($post_url); ?>">
+                    <?php if ($user_url): ?>
+                        <a href="<?php echo esc_url($user_url); ?>">
                             <?php echo esc_html($row->name); ?>
                         </a>
                     <?php else: ?>
