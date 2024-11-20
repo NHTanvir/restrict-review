@@ -107,7 +107,6 @@ foreach ($results as $row) {
 
     $post_id        = $wpdb->get_var($query);
     $user_url       = $post_id ? get_permalink($post_id) : '';
-    $post_url       = $row->post_id ? get_permalink($row->post_id) : '';
     $post_status    = $row->post_id ? get_post_status($row->post_id) : '';
 ?>
     <table class="application-table" border="1" cellpadding="10" cellspacing="0" style="margin-bottom: 20px;">
@@ -118,7 +117,7 @@ foreach ($results as $row) {
                     <?php if ($post_status === 'private') : ?>
                         <?php echo esc_html($title); ?>
                     <?php else : ?>
-                        <a href="<?php echo esc_url($post_url); ?>" target="_blank">
+                        <a href="<?php echo esc_url($job_url); ?>" target="_blank">
                             <?php echo esc_html($title); ?>
                         </a>
                     <?php endif; ?>

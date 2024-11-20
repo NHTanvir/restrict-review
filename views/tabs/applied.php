@@ -102,74 +102,73 @@ if (empty($results)) {
     echo '<p>No applications found.</p>';
     return;
 }
-?>
+foreach ($results as $row) {
+    $job_url            = get_permalink($row->post_id);
+    $title              = get_the_title($row->post_id);
+    $author_id          = esc_attr($row->author_id);
+    $author_info        = get_userdata($author_id);
+    $author_email       = $author_info->user_email;
+    $author_name        = $author_info->user_nicename;
 
-<table class="application-table" border="1" cellpadding="10" cellspacing="0">
-    <thead>
+    $query = $wpdb->prepare("
+        SELECT posts.ID 
+        FROM {$wpdb->posts} AS posts
+        INNER JOIN {$wpdb->postmeta} AS postmeta ON posts.ID = postmeta.post_id 
+        WHERE posts.post_type = 'users' 
+        AND postmeta.meta_key = 'user_id' 
+        AND postmeta.meta_value = %s
+        LIMIT 1
+    ", $author_id);
+
+    $post_id = $wpdb->get_var($query);
+    $user_url = $post_id ? get_permalink($post_id) : '';
+    $post_status = $row->post_id ? get_post_status($row->post_id) : '';
+    ?>
+    <table class="application-table" border="1" cellpadding="10" cellspacing="0">
+        <tbody> 
         <tr>
-            <th>Job Title</th>
-            <th>Author Name</th>
-            <th>Author Email</th>
-            <th>Message</th>
-            <th>Status</th> 
-        </tr>
-    </thead>
-    <tbody>
-        <?php
-        foreach ($results as $row) {
-            $job_url            = get_permalink($row->post_id);
-            $title              = get_the_title($row->post_id);
-            $author_id          = esc_attr($row->author_id);
-            $author_info        = get_userdata($author_id);
-            $author_email       = $author_info->user_email;
-            $author_name        = $author_info->user_nicename;
-
-            $query = $wpdb->prepare("
-                SELECT posts.ID 
-                FROM {$wpdb->posts} AS posts
-                INNER JOIN {$wpdb->postmeta} AS postmeta ON posts.ID = postmeta.post_id 
-                WHERE posts.post_type = 'users' 
-                AND postmeta.meta_key = 'user_id' 
-                AND postmeta.meta_value = %s
-                LIMIT 1
-            ", $author_id);
-
-            $post_id = $wpdb->get_var($query);
-            $post_url = $post_id ? get_permalink($post_id) : '';
-            $post_status = $post_id ? get_post_status($post_id) : '';
-
-            ?>
-            <tr data-review-id="<?php echo esc_attr($row->post_id); ?>">
-                <td>
-                    <?php if ($post_status === 'private') : ?>
+            <td>Job Title</td>
+            <td>
+                <?php if ($post_status === 'private') : ?>
+                    <?php echo esc_html($title); ?>
+                <?php else : ?>
+                    <a href="<?php echo esc_url($job_url); ?>" target="_blank">
                         <?php echo esc_html($title); ?>
-                    <?php else : ?>
-                        <a href="<?php echo esc_url($job_url); ?>" target="_blank">
-                            <?php echo esc_html($title); ?>
-                        </a>
-                    <?php endif; ?>
-                </td>
-                <td>
-                    <?php if ($post_url): ?>
-                        <a href="<?php echo esc_url($post_url); ?>">
-                            <?php echo esc_html($author_name); ?>
-                        </a>
-                    <?php else: ?>
+                    </a>
+                <?php endif; ?>
+            </td>
+        </tr>
+        <tr data-review-id="<?php echo esc_attr($row->post_id); ?>">
+            <td>Autdor Name</td>
+            <td>
+                <?php if ($user_url): ?>
+                    <a href="<?php echo esc_url($user_url); ?>">
                         <?php echo esc_html($author_name); ?>
-                    <?php endif; ?>
-                </td>
-                <td><?php echo esc_html($author_email); ?></td>
-                <td><?php echo esc_html($row->message); ?></td>
-                <td style="text-align: center;" class="job-status <?php echo esc_attr($row->status); ?>">
-                    <?php echo esc_html($row->status); ?>
-                </td>
-            </tr>
-            <?php
-        }
-        ?>
-    </tbody>
-</table>
-
+                    </a>
+                <?php else: ?>
+                    <?php echo esc_html($author_name); ?>
+                <?php endif; ?>
+            </td>
+        </tr>
+        <tr>
+            <td>Autdor Email</td>
+            <td><?php echo esc_html($author_email); ?></td>
+        </tr>
+        <tr>
+            <td>Message</td>
+            <td><?php echo esc_html($row->message); ?></td>
+        </tr>
+        <tr>
+            <td>Status</td>
+            <td style="text-align: center;" class="job-status <?php echo esc_attr($row->status); ?>">
+                <?php echo esc_html($row->status); ?>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <?php
+}
+?>
 <script>
     var ajax_nonce = "<?php echo wp_create_nonce('update_job_status_nonce'); ?>";
 </script>
