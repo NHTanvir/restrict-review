@@ -157,19 +157,42 @@ class AJAX extends Base {
 				'viewed' 	=> 0,
 			));
 
-			$wpdb->insert($notification_table, array(
-				'user_id' 	=> $user_id,
-				'job_id' 	=> $job_id,
-				'type' 		=> 'review_pending',
-				'viewed' 	=> 0,
-			));
+			$exists_query = $wpdb->prepare(
+				"SELECT COUNT(*) FROM $notification_table 
+				WHERE user_id = %d AND job_id = %d AND type = %s",
+				$user_id,
+				$job_id,
+				'review_pending'
+			);
 
-			$wpdb->insert($notification_table, array(
-				'user_id' 	=> $author_id,
-				'job_id' 	=> $job_id,
-				'type' 		=> 'review_pending',
-				'viewed' 	=> 0,
-			));
+			// Insert only if no matching record exists
+			if ($wpdb->get_var($exists_query) == 0) {
+				$wpdb->insert($notification_table, array(
+					'user_id'  => $user_id,
+					'job_id'   => $job_id,
+					'type'     => 'review_pending',
+					'viewed'   => 0,
+				));
+			}
+
+			// Repeat for the author
+			$exists_query_author = $wpdb->prepare(
+				"SELECT COUNT(*) FROM $notification_table 
+				WHERE user_id = %d AND job_id = %d AND type = %s",
+				$author_id,
+				$job_id,
+				'review_pending'
+			);
+
+			if ($wpdb->get_var($exists_query_author) == 0) {
+				$wpdb->insert($notification_table, array(
+					'user_id'  => $author_id,
+					'job_id'   => $job_id,
+					'type'     => 'review_pending',
+					'viewed'   => 0,
+				));
+			}
+
 		
 			$author_email = get_the_author_meta('user_email', $author_id);
 			$user_email = get_the_author_meta('user_email', $user_id);
