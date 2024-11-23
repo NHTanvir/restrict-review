@@ -131,11 +131,27 @@ class AJAX extends Base {
 				'type' 		=> 'hired',
 				'viewed' 	=> 0,
 			));
+
 		
 			$user_email = get_the_author_meta('user_email', $user_id);
 		
+			$post_title = get_the_title($job_id);
+			$client_name = get_the_author_meta('display_name', $author_id);
+			$email_description = "We are excited to inform you that you have been selected for the job titled '{$post_title}'. Please feel free to reach out to your client for further discussions or check your Tradie Dashboard for updates.";
 			$subject = 'You Are Hired!';
-			$message = 'Congratulations! You have been hired for the job with ID ' . $job_id . '.';
+			$message = "
+				<p>Congratulations! You have been hired for the job <strong>{$post_title}</strong>.</p>
+				<strong>Query on your post:</strong>
+				<p>{$post_title}</p>
+				<strong>Client Name:</strong>
+				<p>{$client_name}</p>
+				<strong>Job Related Query:</strong>
+				<p>{$email_description}</p>
+				<br>
+				<strong>Important Note:</strong>
+				<p>To ensure you get the latest updates on your job, check in on your Need A Tradie Dashboard regularly and please remember to check your junk email folder and mark your Need A Tradie emails as safe.</p>
+			";
+		
 			$message = str_replace('&nbsp;', ' ', $message);
 			if (!empty($user_email)) {
 				wp_mail($user_email, $subject, $message);
