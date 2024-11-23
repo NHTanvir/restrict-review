@@ -24,7 +24,7 @@ class User_Specific_Review {
      * Constructor.
      */
     public function __construct() {
-        $this->invalid_message = __( '*You are not allowed to submit a review the user must apply and complete any of your jobs.', 'restrict-reviews' );
+        $this->invalid_message = __( '*You are unable to submit a review. In order to submit a review you need to both apply and complete a job.', 'restrict-reviews' );
     }
 
     /**

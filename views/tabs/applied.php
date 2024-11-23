@@ -139,7 +139,7 @@ foreach ($results as $row) {
             </td>
         </tr>
         <tr data-review-id="<?php echo esc_attr($row->post_id); ?>">
-            <td>Autdor Name</td>
+            <td>Author Name</td>
             <td>
                 <?php if ($user_url): ?>
                     <a href="<?php echo esc_url($user_url); ?>">
@@ -151,7 +151,7 @@ foreach ($results as $row) {
             </td>
         </tr>
         <tr>
-            <td>Autdor Email</td>
+            <td>Author Email</td>
             <td><?php echo esc_html($author_email); ?></td>
         </tr>
         <tr>

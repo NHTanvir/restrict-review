@@ -74,7 +74,7 @@ foreach ( $results as $row ) {
     <table class="feedback-received-table" border="1" cellpadding="10" cellspacing="0">
         <tbody>
             <tr>
-                <td>Autdor</td>
+                <td>Author</td>
                 <td>
                     <?php if ($user_url): ?>
                         <a href="<?php echo esc_url($user_url); ?>" target="_blank">
