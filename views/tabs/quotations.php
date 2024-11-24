@@ -146,7 +146,11 @@ foreach ($results as $row) {
             <tr>
                 <td>Status</td>
                 <td>
-                    <select name="job_status" data-job-id="<?php echo esc_attr($row->post_id); ?>" class="job-status-dropdown <?php echo esc_attr($row->status); ?>">
+                    <select 
+                        name="job_status" 
+                        data-job-id="<?php echo esc_attr($row->id); ?>"
+                        class="job-status-dropdown <?php echo esc_attr($row->status); ?>"
+                    >
                         <?php 
                         $status_options = ['hiring', 'hired', 'complete'];
                         foreach ($status_options as $status) {
@@ -157,7 +161,12 @@ foreach ($results as $row) {
                             </option>
                         <?php } ?>
                     </select><br>
-                    <button class="update-status-btn" data-job-id="<?php echo esc_attr($row->post_id); ?>">Update</button>
+                    <button 
+                        class="update-status-btn" 
+                        data-job-id="<?php echo esc_attr($row->id); ?>" 
+                    >
+                        Update
+                    </button>
                 </td>
             </tr>
         </tbody>

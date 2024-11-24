@@ -105,19 +105,22 @@ class AJAX extends Base {
 	
 		global $wpdb;
 	
-		$job_id 			= intval( $_POST['job_id'] );
+		$row_id     		= intval($_POST['job_id']);
 		$job_status 		= sanitize_text_field( $_POST['job_status'] );
 		$table_name 		= $wpdb->prefix . 'trade_job_submission';
 		$notification_table = $wpdb->prefix . 'trade_notifications';
-		$user_id 			= pc_get_user_or_author_id( $job_id, 'user_id' );
-		$author_id 			= pc_get_user_or_author_id( $job_id, 'author_id' );
+
 		$updated 			= $wpdb->update(
 					$table_name,
 					array( 'status' => $job_status ),
-					array( 'post_id' => $job_id ),
+					array( 'id' => $row_id ),
 					array( '%s' ),
 					array( '%d' )
 				);
+
+		$job_id 			= $wpdb->get_var($wpdb->prepare("SELECT post_id FROM {$table_name} WHERE id = %d", $row_id));
+		$user_id 			= pc_get_user_or_author_id( $job_id, 'user_id' );
+		$author_id 			= pc_get_user_or_author_id( $job_id, 'author_id' );
 		if ($job_status === 'hired') {
 			$post = array(
 				'ID' => $job_id,
