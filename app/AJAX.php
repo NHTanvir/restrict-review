@@ -209,20 +209,46 @@ class AJAX extends Base {
 				));
 			}
 
-		
 			$author_email = get_the_author_meta('user_email', $author_id);
-			$user_email = get_the_author_meta('user_email', $user_id);
-		
+			$post_title   = get_the_title($job_id);
+			$tradesperson_name = get_the_author_meta('display_name', $user_id);
+
 			$subject = 'Job Completion - Review Request';
-			$message = 'The job with ID ' . $job_id . ' has been completed. Please take a moment to provide your review.';
-			$message = str_replace('&nbsp;', ' ', $message);
+			$message_to_client = "
+				<p>Thank you for using Need A Tradie!</p>
+				<p>Your job <strong>{$post_title}</strong> has been successfully completed by <strong>{$tradesperson_name}</strong>.</p>
+				<strong>How was your experience?</strong>
+				<p>Please take a moment to review the tradesperson's work and share your feedback. Your review helps others make informed decisions and supports tradespeople in building their reputation.</p>
+				<br>
+				<strong>Important Note:</strong>
+				<p>To leave a review, log in to your Dashboard. If you can’t find our emails, please check your junk folder and mark them as safe!</p>
+			";
+
+			$message_to_client = str_replace('&nbsp;', ' ', $message_to_client);
+
 			if (!empty($author_email)) {
-				wp_mail($author_email, $subject, $message);
+				wp_mail($author_email, $subject, $message_to_client, array('Content-Type: text/html; charset=UTF-8'));
 			}
-		
-			// Send email to the user
+
+			$user_email 	= get_the_author_meta('user_email', $user_id);
+			$post_title 	= get_the_title($job_id);
+			$client_name 	= get_the_author_meta('display_name', $author_id);
+
+			$subject = 'Job Completion - Confirmation';
+			$message_to_tradesperson = "
+				<p>Congratulations on completing the job <strong>{$post_title}</strong>!</p>
+				<strong>Client Name:</strong>
+				<p>{$client_name}</p>
+				<strong>What happens next?</strong>
+				<p>The client has been notified of the job's completion and asked to leave a review of your work. Check your Need A Tradie Dashboard regularly for updates and new opportunities.</p>
+				<br>
+				<strong>Important Note:</strong>
+				<p>Maintaining a high level of professionalism and receiving positive reviews can help boost your profile and secure more jobs.</p>
+			";
+
+			$message_to_tradesperson = str_replace('&nbsp;', ' ', $message_to_tradesperson);
 			if (!empty($user_email)) {
-				wp_mail($user_email, $subject, $message);
+				wp_mail($user_email, $subject, $message_to_tradesperson, array('Content-Type: text/html; charset=UTF-8'));
 			}
 		}
 			
