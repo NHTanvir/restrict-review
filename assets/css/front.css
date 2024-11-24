@@ -145,6 +145,8 @@
     word-break: break-word;
     white-space: normal;
 }
-.has-client-role #review-experience {
+.has-client-role #review-experience,
+.has-client-role #review-qualification {
     display: none !important;
 }
+
