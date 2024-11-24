@@ -144,6 +144,7 @@ jQuery(function ($) {
                         color: "white",
                         padding: "2px 5px",
                         borderRadius: "5px",
+                        top: "-10px"
                     });
 
                     $secondTd.prepend($message);
