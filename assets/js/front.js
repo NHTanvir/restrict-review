@@ -20,11 +20,12 @@ jQuery(function ($) {
         var unviewedFeedback = WPPRR.unviewedFeedback;
         var unreviewedJobs = WPPRR.unreviewedJobs;
 
+
         var menuItemLink = $(
-            '.jet-profile-menu__item-link:contains("Quotations")'
+            '.jet-profile-menu__item-link[href="https://needatradie.co.uk/dashboard/Quotations/"]'
         );
         var ApplicationsmenuItemLink = $(
-            '.jet-profile-menu__item-link:contains("Applications")'
+            '.jet-profile-menu__item-link[href="https://needatradie.co.uk/dashboard/Applications/"]'
         );
         var FeedbackReceivedMenuItemLink = $(
             '.jet-profile-menu__item-link:contains("Feedback Received")'
@@ -114,13 +115,14 @@ jQuery(function ($) {
 
             if (WPPRR.is_client == 1) {
                 ReviewMenu = $(
-                    '.jet-profile-menu__item-link:contains("Quotations")'
+                    '.jet-profile-menu__item-link[href="https://needatradie.co.uk/dashboard/Quotations/"]'
                 );
             } else {
                 ReviewMenu = $(
-                    '.jet-profile-menu__item-link:contains("Applications")'
+                    '.jet-profile-menu__item-link[href="https://needatradie.co.uk/dashboard/Applications/"]'
                 );
             }
+            
 
             if (WPPRR.unreviewedJobs.length) {
                 ReviewMenu.css("position", "relative");
@@ -144,7 +146,6 @@ jQuery(function ($) {
                         color: "white",
                         padding: "2px 5px",
                         borderRadius: "5px",
-                        top: "-10px"
                     });
 
                     $secondTd.prepend($message);
