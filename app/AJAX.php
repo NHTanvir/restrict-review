@@ -140,12 +140,10 @@ class AJAX extends Base {
 		
 			$post_title = get_the_title($job_id);
 			$client_name = get_the_author_meta('display_name', $author_id);
-			$email_description = "We are excited to inform you that you have been selected for the job titled '{$post_title}'. Please feel free to reach out to your client for further discussions or check your Tradie Dashboard for updates.";
+			$email_description = "We are excited to inform you that you have been selected for the job. Please feel free to reach out to your client for further discussions or check your Tradie Dashboard for updates.";
 			$subject = 'You Are Hired!';
 			$message = "
 				<p>Congratulations! You have been hired for the job <strong>{$post_title}</strong>.</p>
-				<strong>Query on your post:</strong>
-				<p>{$post_title}</p>
 				<strong>Client Name:</strong>
 				<p>{$client_name}</p>
 				<strong>Job Related Query:</strong>
@@ -224,7 +222,7 @@ class AJAX extends Base {
 				<p>Please take a moment to review the tradesperson's work and share your feedback. Your review helps others make informed decisions and supports tradespeople in building their reputation.</p>
 				<br>
 				<strong>Important Note:</strong>
-				<p>To leave a review, log in to your Dashboard. If you can’t find our emails, please check your junk folder and mark them as safe!</p>
+				<p>To ensure you get the latest updates on your job, check in on your Need A Tradie Dashboard regularly and please remember to check your junk email folder and mark your Need A Tradie emails as safe.</p>
 			";
 
 			$message_to_client = str_replace('&nbsp;', ' ', $message_to_client);
@@ -246,7 +244,7 @@ class AJAX extends Base {
 				<p>The client has been notified of the job's completion and asked to leave a review of your work. Check your Need A Tradie Dashboard regularly for updates and new opportunities.</p>
 				<br>
 				<strong>Important Note:</strong>
-				<p>Maintaining a high level of professionalism and receiving positive reviews can help boost your profile and secure more jobs.</p>
+				<p>To ensure you get the latest updates on your job, check in on your Need A Tradie Dashboard regularly and please remember to check your junk email folder and mark your Need A Tradie emails as safe.</p>
 			";
 
 			$message_to_tradesperson = str_replace('&nbsp;', ' ', $message_to_tradesperson);
