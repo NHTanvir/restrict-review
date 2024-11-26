@@ -155,7 +155,7 @@ class AJAX extends Base {
 		
 			$message = str_replace('&nbsp;', ' ', $message);
 			if (!empty($user_email)) {
-				wp_mail($user_email, $subject, $message);
+				wp_mail($user_email, $subject, $message, array('Content-Type: text/html; charset=UTF-8'));
 			}
 		}
 		
