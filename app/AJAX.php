@@ -109,8 +109,26 @@ class AJAX extends Base {
 		$job_status 		= sanitize_text_field( $_POST['job_status'] );
 		$table_name 		= $wpdb->prefix . 'trade_job_submission';
 		$notification_table = $wpdb->prefix . 'trade_notifications';
+		$job_id 			= $wpdb->get_var( $wpdb->prepare( "SELECT post_id FROM {$table_name} WHERE id = %d", $row_id ) );
 
-		$updated 			= $wpdb->update(
+		$existing_job_status = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT COUNT(*) FROM {$table_name} WHERE post_id = %d AND status IN (%s, %s)",
+				$job_id,
+				'hired',
+				'complete'
+			)
+		);
+	
+		if ( $existing_job_status > 0 ) {
+			wp_send_json_success( [
+				'status'  => 'success',
+				'message' => 'You have already hired someone. You cannot hire anyone else for this job.',
+			] );
+			wp_die();
+		}
+
+		$updated = $wpdb->update(
 					$table_name,
 					array( 'status' => $job_status ),
 					array( 'id' => $row_id ),
@@ -118,7 +136,6 @@ class AJAX extends Base {
 					array( '%d' )
 				);
 
-		$job_id 			= $wpdb->get_var($wpdb->prepare("SELECT post_id FROM {$table_name} WHERE id = %d", $row_id));
 		$user_id 			= pc_get_user_or_author_id( $job_id, 'user_id' );
 		$author_id 			= pc_get_user_or_author_id( $job_id, 'author_id' );
 		if ($job_status === 'hired') {
@@ -174,6 +191,7 @@ class AJAX extends Base {
 				'viewed' 	=> 0,
 			));
 
+			// Check and replace for the user
 			$exists_query = $wpdb->prepare(
 				"SELECT COUNT(*) FROM $notification_table 
 				WHERE user_id = %d AND job_id = %d AND type = %s",
@@ -182,15 +200,30 @@ class AJAX extends Base {
 				'review_pending'
 			);
 
-			// Insert only if no matching record exists
-			if ($wpdb->get_var($exists_query) == 0) {
-				$wpdb->insert($notification_table, array(
+			// Delete the existing record, if any
+			if ($wpdb->get_var($exists_query) > 0) {
+					$wpdb->delete(
+						$notification_table,
+						array(
+							'user_id' => $user_id,
+							'job_id'  => $job_id,
+							'type'    => 'review_pending'
+						),
+						array('%d', '%d', '%s')
+				);
+			}
+
+			// Insert the new record
+			$wpdb->insert(
+				$notification_table,
+				array(
 					'user_id'  => $user_id,
 					'job_id'   => $job_id,
 					'type'     => 'review_pending',
 					'viewed'   => 0,
-				));
-			}
+				),
+				array('%d', '%d', '%s', '%d')
+			);
 
 			// Repeat for the author
 			$exists_query_author = $wpdb->prepare(
@@ -201,14 +234,31 @@ class AJAX extends Base {
 				'review_pending'
 			);
 
-			if ($wpdb->get_var($exists_query_author) == 0) {
-				$wpdb->insert($notification_table, array(
+			// Delete the existing record, if any
+			if ($wpdb->get_var($exists_query_author) > 0) {
+				$wpdb->delete(
+					$notification_table,
+					array(
+						'user_id' => $author_id,
+						'job_id'  => $job_id,
+						'type'    => 'review_pending'
+					),
+					array('%d', '%d', '%s')
+				);
+			}
+
+			// Insert the new record for the author
+			$wpdb->insert(
+				$notification_table,
+				array(
 					'user_id'  => $author_id,
 					'job_id'   => $job_id,
 					'type'     => 'review_pending',
 					'viewed'   => 0,
-				));
-			}
+				),
+				array('%d', '%d', '%s', '%d')
+			);
+
 
 			$author_email = get_the_author_meta('user_email', $author_id);
 			$post_title   = get_the_title($job_id);
@@ -270,7 +320,10 @@ class AJAX extends Base {
 			];
 			wp_send_json_success( $data );
 		} else {
-			wp_send_json_error( array( 'message' => 'Failed to update job status.' ) );
+			wp_send_json_success( [
+				'status'  => 'success',
+				'message' => 'You have already hired someone. You cannot hire anyone else for this job.',
+			] );
 		}
 	}
 }
