@@ -80,9 +80,9 @@ class User_Specific_Review {
             $user_id,
             'complete'
         );
-
+        
         $completed_jobs_query_2 = $wpdb->prepare(
-            "SELECT COUNT(*) 
+            "SELECT COUNT(DISTINCT post_id) 
              FROM $table_name 
              WHERE user_id = %d 
              AND author_id = %d 
