@@ -118,14 +118,18 @@ class AJAX extends Base {
 		);
 		
 		$job_id     		= $job_data['post_id'];
-		$job_status 		= $job_data['status'];
 
 		$existing_job_status = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT COUNT(*) FROM {$table_name} WHERE post_id = %d AND status IN (%s, %s)",
+				"SELECT COUNT(*) 
+				 FROM {$table_name} 
+				 WHERE post_id = %d 
+				   AND status IN (%s, %s) 
+				   AND id != %d",
 				$job_id,
 				'hired',
-				'complete'
+				'complete',
+				$row_id
 			)
 		);
 
@@ -133,7 +137,6 @@ class AJAX extends Base {
 		if ( $existing_job_status > 0 ) {
 			wp_send_json_success( [
 				'status'  => trim( $job_status ),
-				'updated' => false,
 				'message' => 'You have already hired someone. You cannot hire anyone else for this job.',
 			] );
 		}
@@ -155,21 +158,38 @@ class AJAX extends Base {
 			);
 			wp_update_post($post);
 
-			$wpdb->insert($notification_table, array(
-				'user_id' 	=> $user_id,
-				'job_id' 	=> $job_id,
-				'type' 		=> 'hired',
-				'viewed' 	=> 0,
-			));
+			$existing_notification = $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT id FROM {$notification_table} WHERE job_id = %d AND type = %s",
+					$job_id,
+					'hired'
+				)
+			);
 
-		
-			$user_email = get_the_author_meta('user_email', $user_id);
-		
-			$post_title = get_the_title($job_id);
-			$client_name = get_the_author_meta('display_name', $author_id);
-			$email_description = "We are excited to inform you that you have been selected for the job. Please feel free to reach out to your client for further discussions or check your Tradie Dashboard for updates.";
-			$subject = 'You Are Hired!';
-			$message = "
+			if ( $existing_notification ) {
+				$wpdb->delete(
+					$notification_table,
+					array( 'id' => $existing_notification ),
+					array( '%d' )
+				);
+			}
+
+			$wpdb->insert(
+				$notification_table,
+				array(
+					'user_id' => $user_id,
+					'job_id'  => $job_id,
+					'type'    => 'hired',
+					'viewed'  => 0,
+				)
+			);
+
+			$user_email 		= get_the_author_meta('user_email', $user_id);
+			$post_title 		= get_the_title($job_id);
+			$client_name 		= get_the_author_meta('display_name', $author_id);
+			$email_description 	= "We are excited to inform you that you have been selected for the job. Please feel free to reach out to your client for further discussions or check your Tradie Dashboard for updates.";
+			$subject 			= 'You Are Hired!';
+			$message 			= "
 				<p>Congratulations! You have been hired for the job <strong>{$post_title}</strong>.</p>
 				<strong>Client Name:</strong>
 				<p>{$client_name}</p>
@@ -325,8 +345,7 @@ class AJAX extends Base {
 		if ( $updated !== false ) {
 			$data = [
 				'message' => 'Your request has been submitted successfully!',
-				'status' => $job_status,
-				'updated' => false,
+				'status' => trim( $job_status ),
 			];
 			wp_send_json_success( $data );
 		} else {

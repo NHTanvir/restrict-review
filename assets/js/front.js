@@ -98,8 +98,6 @@ jQuery(function ($) {
                                 .addClass("job-status-dropdown");
                             select.addClass(response.data.status);
                         }
-                        $('.job-status-dropdown option').prop('selected', false);
-                        $(`.job-status-dropdown option[value="${response.data.status}"]`).prop('selected', true);
                         alert(response.data.message);
                     } else {
                         alert("Failed to update job status.");
