@@ -109,7 +109,16 @@ class AJAX extends Base {
 		$job_status 		= sanitize_text_field( $_POST['job_status'] );
 		$table_name 		= $wpdb->prefix . 'trade_job_submission';
 		$notification_table = $wpdb->prefix . 'trade_notifications';
-		$job_id 			= $wpdb->get_var( $wpdb->prepare( "SELECT post_id FROM {$table_name} WHERE id = %d", $row_id ) );
+		$job_data = $wpdb->get_row( 
+			$wpdb->prepare( 
+				"SELECT post_id, status FROM {$table_name} WHERE id = %d", 
+				$row_id 
+			), 
+			ARRAY_A 
+		);
+		
+		$job_id     		= $job_data['post_id'];
+		$job_status 		= $job_data['status'];
 
 		$existing_job_status = $wpdb->get_var(
 			$wpdb->prepare(
@@ -119,13 +128,14 @@ class AJAX extends Base {
 				'complete'
 			)
 		);
+
 	
 		if ( $existing_job_status > 0 ) {
 			wp_send_json_success( [
-				'status'  => 'success',
+				'status'  => trim( $job_status ),
+				'updated' => false,
 				'message' => 'You have already hired someone. You cannot hire anyone else for this job.',
 			] );
-			wp_die();
 		}
 
 		$updated = $wpdb->update(
@@ -314,9 +324,9 @@ class AJAX extends Base {
 
 		if ( $updated !== false ) {
 			$data = [
-				'status' => 'success',
 				'message' => 'Your request has been submitted successfully!',
-				'status' => $job_status
+				'status' => $job_status,
+				'updated' => false,
 			];
 			wp_send_json_success( $data );
 		} else {
