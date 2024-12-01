@@ -111,13 +111,17 @@ class AJAX extends Base {
 		$notification_table = $wpdb->prefix . 'trade_notifications';
 		$job_data = $wpdb->get_row( 
 			$wpdb->prepare( 
-				"SELECT post_id, status FROM {$table_name} WHERE id = %d", 
+				"SELECT post_id, user_id, author_id, status 
+				 FROM {$table_name} 
+				 WHERE id = %d", 
 				$row_id 
 			), 
 			ARRAY_A 
 		);
 		
 		$job_id     		= $job_data['post_id'];
+		$user_id  			= $job_data['user_id'];
+		$author_id  		= $job_data['author_id'];
 
 		$existing_job_status = $wpdb->get_var(
 			$wpdb->prepare(
@@ -149,8 +153,6 @@ class AJAX extends Base {
 					array( '%d' )
 				);
 
-		$user_id 			= pc_get_user_or_author_id( $job_id, 'user_id' );
-		$author_id 			= pc_get_user_or_author_id( $job_id, 'author_id' );
 		if ($job_status === 'hired') {
 			$post = array(
 				'ID' => $job_id,
