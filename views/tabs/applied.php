@@ -92,6 +92,7 @@ $wpdb->query($wpdb->prepare($sql, 1, $current_user_id, ...$types));
         <option value="hired" <?php selected($status_filter, 'hired'); ?>>Hired</option>
         <option value="hiring" <?php selected($status_filter, 'hiring'); ?>>Hiring</option>
         <option value="complete" <?php selected($status_filter, 'complete'); ?>>Complete</option>
+        <option value="closed" <?php selected($status_filter, 'closed'); ?>>Closed</option>
     </select>
 
     <input type="submit" value="Filter" class="filter-btn">
@@ -138,7 +139,7 @@ foreach ($results as $row) {
                 <?php endif; ?>
             </td>
         </tr>
-        <tr data-review-id="<?php echo esc_attr($row->post_id); ?>">
+        <tr data-review-id="<?php echo esc_attr($row->id); ?>">
             <td>Author Name</td>
             <td>
                 <?php if ($user_url): ?>

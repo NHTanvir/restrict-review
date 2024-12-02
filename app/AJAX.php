@@ -153,6 +153,17 @@ class AJAX extends Base {
 					array( '%d' )
 				);
 
+		$wpdb->query(
+			$wpdb->prepare(
+				"UPDATE $table_name 
+					SET status = %s 
+					WHERE post_id = %d AND id != %d",
+				'closed',
+				$job_id,
+				$row_id
+			)
+		);
+
 		if ($job_status === 'hired') {
 			$post = array(
 				'ID' => $job_id,

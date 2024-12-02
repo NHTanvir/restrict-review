@@ -7,6 +7,12 @@ let pc_modal = (show = true) => {
 };
 jQuery(function ($) {
     $(document).ready(function () {
+
+        $('#tradesman_Email').before(
+              '<div id="emailPopup" style="position: absolute; top: -40px; left: -150px; background: #f8d7da; color: #721c24; padding: 5px 10px; border: 1px solid #f5c6cb; border-radius: 3px;">This field is readonly.</div>'
+        );
+        
+        $('#tradesman_Email').prop('readonly', true);
         $("a[href*='/users/']").on("click", function (event) {
             event.preventDefault();
             var reviewRow = $(this).closest("tr");
@@ -133,7 +139,7 @@ jQuery(function ($) {
             }
 
             WPPRR.unreviewedJobs.forEach(function (jobId) {
-                var $tr = $('tr[data-review-id="' + jobId + '"]');
+                var $tr = $('tr[data-id="' + jobId + '"]');
                 if ($tr.length) {
                     var $secondTd = $tr.find("td").eq(1);
                     var $message = $(

@@ -124,7 +124,7 @@ class Front extends Base {
 		$table_name = $wpdb->prefix . 'trade_notifications';
 	
 		$query = $wpdb->prepare(
-			"SELECT job_id
+			"SELECT id
 			 FROM $table_name
 			 WHERE viewed = %d
 			 AND user_id = %d

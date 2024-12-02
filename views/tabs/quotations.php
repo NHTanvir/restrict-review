@@ -123,7 +123,7 @@ foreach ($results as $row) {
                     <?php endif; ?>
                 </td>
             </tr>
-            <tr data-review-id="<?php echo esc_attr($row->post_id); ?>">
+            <tr data-review-id="<?php echo esc_attr($row->post_id); ?>" data-id="<?php echo esc_attr($row->id); ?>">
                 <td>Tradesperson Name</td>
                 <td>
                     <?php if ($user_url): ?>

@@ -39,6 +39,12 @@
     color: white;
 }
 
+.job-status-dropdown.closed,
+.job-status.closed {
+    background-color: rgb(0 100 255);
+    color: white;
+}
+
 .job-status-dropdown.complete,
 .job-status.complete {
     background-color: red;
