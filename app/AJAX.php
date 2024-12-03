@@ -153,41 +153,43 @@ class AJAX extends Base {
 					array( '%d' )
 				);
 
-		$wpdb->query(
-			$wpdb->prepare(
-				"UPDATE $table_name 
-					SET status = %s 
-					WHERE post_id = %d AND id != %d",
-				'closed',
-				$job_id,
-				$row_id
-			)
-		);
 
-		
 
-		$updated_rows = $wpdb->get_results(
-			$wpdb->prepare(
-				"SELECT id, user_id FROM $table_name 
-				WHERE post_id = %d AND id != %d AND status = %s",
-				$job_id,
-				$row_id,
-				'closed'
-			),
-			ARRAY_A
-		);
-
-		foreach ( $updated_rows as $row ) {
-			$wpdb->insert(
-				$notification_table,
-				array(
-					'user_id'        => $row['user_id'], 
-					'job_id'         => $job_id,
-					'submission_id'  => $row['id'], 
-					'type'           => 'closed', 
-					'viewed'         => 0,  
+		if ($job_status === 'hired' || $job_status === 'complete') {
+			$wpdb->query(
+				$wpdb->prepare(
+					"UPDATE $table_name 
+						SET status = %s 
+						WHERE post_id = %d AND id != %d",
+					'closed',
+					$job_id,
+					$row_id
 				)
 			);
+	
+			$updated_rows = $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT id, user_id FROM $table_name 
+					WHERE post_id = %d AND id != %d AND status = %s",
+					$job_id,
+					$row_id,
+					'closed'
+				),
+				ARRAY_A
+			);
+	
+			foreach ( $updated_rows as $row ) {
+				$wpdb->insert(
+					$notification_table,
+					array(
+						'user_id'        => $row['user_id'], 
+						'job_id'         => $job_id,
+						'submission_id'  => $row['id'], 
+						'type'           => 'closed', 
+						'viewed'         => 0,  
+					)
+				);
+			}
 		}
 
 		if ($job_status === 'hired') {
