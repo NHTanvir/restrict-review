@@ -82,6 +82,7 @@ class Admin extends Base {
 				id mediumint(9) NOT NULL AUTO_INCREMENT,
 				user_id bigint(20) UNSIGNED NOT NULL,
 				job_id  bigint(20) UNSIGNED NOT NULL,
+				submission_id  bigint(20) UNSIGNED NOT NULL,
 				type varchar(50) NOT NULL,
 				viewed tinyint(1) NOT NULL DEFAULT 0, 
 				created_at datetime DEFAULT CURRENT_TIMESTAMP,

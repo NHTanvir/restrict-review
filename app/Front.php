@@ -41,6 +41,7 @@ class Front extends Base {
 		$unreviewed_jobs  		= 0;
 		$unviewed_hires 		= 0;
 		$unviewed_completions	= 0;
+		$unviewed_closed		= 0;
 		$is_client 				= 0;
 		$table_name 			= $wpdb->prefix . 'trade_job_submission';
 		$user_id 				= get_current_user_id();
@@ -50,6 +51,7 @@ class Front extends Base {
 
 			$unviewed_hires		 	= $this->count_unviewed_notifications_by_type('hired');
 			$unviewed_completions 	= $this->count_unviewed_notifications_by_type('completed');
+			$unviewed_closed 		= $this->count_unviewed_notifications_by_type('closed');
 		}
 
 		
@@ -74,7 +76,7 @@ class Front extends Base {
 			'_wpnonce'      			=> wp_create_nonce(),
 			'unviewedCount' 			=> $unviewed_count,
 			'unreviewedJobs' 			=> $unviewed_jobs, 
-			'unviewedHiresComplete'     => $unviewed_hires + $unviewed_completions,
+			'unviewedHiresComplete'     => $unviewed_hires + $unviewed_completions + $unviewed_closed,
 			'unviewedFeedback'   		=> $unviewed_feedback,
 			'is_client'					=> $is_client
 		];
@@ -124,7 +126,7 @@ class Front extends Base {
 		$table_name = $wpdb->prefix . 'trade_notifications';
 	
 		$query = $wpdb->prepare(
-			"SELECT id
+			"SELECT submission_id
 			 FROM $table_name
 			 WHERE viewed = %d
 			 AND user_id = %d

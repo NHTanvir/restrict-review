@@ -164,6 +164,32 @@ class AJAX extends Base {
 			)
 		);
 
+		
+
+		$updated_rows = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT id, user_id FROM $table_name 
+				WHERE post_id = %d AND id != %d AND status = %s",
+				$job_id,
+				$row_id,
+				'closed'
+			),
+			ARRAY_A
+		);
+
+		foreach ( $updated_rows as $row ) {
+			$wpdb->insert(
+				$notification_table,
+				array(
+					'user_id'        => $row['user_id'], 
+					'job_id'         => $job_id,
+					'submission_id'  => $row['id'], 
+					'type'           => 'closed', 
+					'viewed'         => 0,  
+				)
+			);
+		}
+
 		if ($job_status === 'hired') {
 			$post = array(
 				'ID' => $job_id,
@@ -173,8 +199,9 @@ class AJAX extends Base {
 
 			$existing_notification = $wpdb->get_var(
 				$wpdb->prepare(
-					"SELECT id FROM {$notification_table} WHERE job_id = %d AND type = %s",
+					"SELECT id FROM {$notification_table} WHERE job_id = %d AND submission_id = %d AND type = %s",
 					$job_id,
+					$row_id,
 					'hired'
 				)
 			);
@@ -189,11 +216,12 @@ class AJAX extends Base {
 
 			$wpdb->insert(
 				$notification_table,
-				array(
-					'user_id' => $user_id,
-					'job_id'  => $job_id,
-					'type'    => 'hired',
-					'viewed'  => 0,
+				array( 
+					'user_id' 		 => $user_id,
+					'job_id'  		 => $job_id,
+					'submission_id'  => $row_id,
+					'type'   		 => 'hired',
+					'viewed' 		 => 0,
 				)
 			);
 
@@ -228,18 +256,20 @@ class AJAX extends Base {
 			wp_update_post($post);
 
 			$wpdb->insert($notification_table, array(
-				'user_id' 	=> $user_id,
-				'job_id' 	=> $job_id,
-				'type' 		=> 'complete',
-				'viewed' 	=> 0,
+				'user_id' 		 => $user_id,
+				'job_id' 		 => $job_id,
+				'submission_id'  => $row_id,
+				'type' 			 => 'complete',
+				'viewed' 		 => 0,
 			));
 
 			// Check and replace for the user
 			$exists_query = $wpdb->prepare(
 				"SELECT COUNT(*) FROM $notification_table 
-				WHERE user_id = %d AND job_id = %d AND type = %s",
+				WHERE user_id = %d AND job_id = %d AND submission_id = %d AND type = %s",
 				$user_id,
 				$job_id,
+				$row_id,
 				'review_pending'
 			);
 
@@ -248,11 +278,12 @@ class AJAX extends Base {
 					$wpdb->delete(
 						$notification_table,
 						array(
-							'user_id' => $user_id,
-							'job_id'  => $job_id,
-							'type'    => 'review_pending'
+							'user_id' 			=> $user_id,
+							'job_id'  			=> $job_id,
+							'submission_id'  	=> $row_id,
+							'type'    			=> 'review_pending'
 						),
-						array('%d', '%d', '%s')
+						array('%d', '%d', '%d', '%s')
 				);
 			}
 
@@ -260,20 +291,22 @@ class AJAX extends Base {
 			$wpdb->insert(
 				$notification_table,
 				array(
-					'user_id'  => $user_id,
-					'job_id'   => $job_id,
-					'type'     => 'review_pending',
-					'viewed'   => 0,
+					'user_id'  			=> $user_id,
+					'job_id'   			=> $job_id,
+					'submission_id'  	=> $row_id,
+					'type'     			=> 'review_pending',
+					'viewed'  			=> 0,
 				),
-				array('%d', '%d', '%s', '%d')
+				array('%d', '%d','%d', '%s', '%d')
 			);
 
 			// Repeat for the author
 			$exists_query_author = $wpdb->prepare(
 				"SELECT COUNT(*) FROM $notification_table 
-				WHERE user_id = %d AND job_id = %d AND type = %s",
+				WHERE user_id = %d AND job_id = %d AND submission_id = %d AND type = %s",
 				$author_id,
 				$job_id,
+				$row_id,
 				'review_pending'
 			);
 
@@ -282,11 +315,12 @@ class AJAX extends Base {
 				$wpdb->delete(
 					$notification_table,
 					array(
-						'user_id' => $author_id,
-						'job_id'  => $job_id,
-						'type'    => 'review_pending'
+						'user_id' 		=> $author_id,
+						'job_id'  		=> $job_id,
+						'submission_id' => $row_id,
+						'type'    		=> 'review_pending'
 					),
-					array('%d', '%d', '%s')
+					array('%d', '%d','%d', '%s')
 				);
 			}
 
@@ -294,12 +328,13 @@ class AJAX extends Base {
 			$wpdb->insert(
 				$notification_table,
 				array(
-					'user_id'  => $author_id,
-					'job_id'   => $job_id,
-					'type'     => 'review_pending',
-					'viewed'   => 0,
+					'user_id'  		=> $author_id,
+					'job_id'   		=> $job_id,
+					'submission_id' => $row_id,
+					'type'     		=> 'review_pending',
+					'viewed'   		=> 0,
 				),
-				array('%d', '%d', '%s', '%d')
+				array('%d', '%d','%d','%s', '%d')
 			);
 
 

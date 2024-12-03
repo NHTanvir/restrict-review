@@ -123,7 +123,7 @@ foreach ($results as $row) {
                     <?php endif; ?>
                 </td>
             </tr>
-            <tr data-review-id="<?php echo esc_attr($row->post_id); ?>" data-id="<?php echo esc_attr($row->id); ?>">
+            <tr data-review-id="<?php echo esc_attr($row->post_id); ?>" data-submission-id="<?php echo esc_attr($row->id); ?>">
                 <td>Tradesperson Name</td>
                 <td>
                     <?php if ($user_url): ?>
@@ -152,7 +152,7 @@ foreach ($results as $row) {
                         class="job-status-dropdown <?php echo esc_attr($row->status); ?>"
                     >
                         <?php 
-                        $status_options = ['hiring', 'hired', 'complete'];
+                        $status_options = ['hiring', 'hired', 'complete', 'closed'];
                         foreach ($status_options as $status) {
                             $selected = ($row->status == $status) ? 'selected="selected"' : '';
                         ?>

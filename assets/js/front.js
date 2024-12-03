@@ -12,14 +12,19 @@ jQuery(function ($) {
               '<div id="emailPopup" style="position: absolute; top: -40px; left: -150px; background: #f8d7da; color: #721c24; padding: 5px 10px; border: 1px solid #f5c6cb; border-radius: 3px;">This field is readonly.</div>'
         );
         
-        $('#tradesman_Email').prop('readonly', true);
+        $('#tradesman_Email').prop('Read Only', true);
         $("a[href*='/users/']").on("click", function (event) {
             event.preventDefault();
-            var reviewRow = $(this).closest("tr");
-            var jobId = reviewRow.data("review-id");
-            document.cookie = "job_id=" + jobId + "; path=/;";
+            var reviewRow       = $(this).closest("tr");
+            var jobId           = reviewRow.data("review-id");
+            var submissionId    = reviewRow.data("submission-id");
+            document.cookie     = "job_id=" + jobId + "; path=/;";
+            document.cookie     = "submission_id=" + submissionId + "; path=/;";
+        
+            // Redirect to the clicked link
             window.location.href = $(this).attr("href");
         });
+        
 
         var unviewedCount = WPPRR.unviewedCount;
         var unviewedHiresComplete = WPPRR.unviewedHiresComplete;
@@ -139,7 +144,7 @@ jQuery(function ($) {
             }
 
             WPPRR.unreviewedJobs.forEach(function (jobId) {
-                var $tr = $('tr[data-id="' + jobId + '"]');
+                var $tr = $('tr[data-submission-id="' + jobId + '"]');
                 if ($tr.length) {
                     var $secondTd = $tr.find("td").eq(1);
                     var $message = $(

@@ -55,7 +55,7 @@ $results = $wpdb->get_results($query);
 $notification_table = $wpdb->prefix . 'trade_notifications';
 
 // List of types you want to match
-$types = ['complete', 'hired'];  
+$types = ['complete', 'hired', 'closed'];  
 
 // Create placeholders for the types
 $type_placeholders = implode(',', array_fill(0, count($types), '%s'));
@@ -139,7 +139,7 @@ foreach ($results as $row) {
                 <?php endif; ?>
             </td>
         </tr>
-        <tr data-review-id="<?php echo esc_attr($row->id); ?>">
+        <tr data-review-id="<?php echo esc_attr($row->post_id); ?>" data-submission-id="<?php echo esc_attr($row->id); ?>">
             <td>Author Name</td>
             <td>
                 <?php if ($user_url): ?>
