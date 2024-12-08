@@ -12,17 +12,16 @@ jQuery(function ($) {
               '<div id="emailPopup" style="position: absolute; top: -40px; left: -150px; background: #f8d7da; color: #721c24; padding: 5px 10px; border: 1px solid #f5c6cb; border-radius: 3px;">This field is readonly.</div>'
         );
         
-        $('#tradesman_Email').prop('Read Only', true);
-        $("a[href*='/users/']").on("click", function (event) {
-            event.preventDefault();
-            var reviewRow       = $(this).closest("tr");
-            var jobId           = reviewRow.data("review-id");
-            var submissionId    = reviewRow.data("submission-id");
-            document.cookie     = "job_id=" + jobId + "; path=/;";
-            document.cookie     = "submission_id=" + submissionId + "; path=/;";
+        $('#tradesman_Email').prop('readonly', true);
+        $("a[href*='/users/']").on("mousedown", function (event) {
+            if (event.which === 1 || event.which === 2) { 
+                var reviewRow    = $(this).closest("tr");
+                var jobId        = reviewRow.data("review-id");
+                var submissionId = reviewRow.data("submission-id");
         
-            // Redirect to the clicked link
-            window.location.href = $(this).attr("href");
+                document.cookie = "job_id=" + jobId + "; path=/;";
+                document.cookie = "submission_id=" + submissionId + "; path=/;";
+            }
         });
         
 
@@ -157,7 +156,7 @@ jQuery(function ($) {
                         color: "white",
                         padding: "2px 5px",
                         borderRadius: "5px",
-                        top : "-10px"
+                        top : "-12px"
                     });
 
                     $secondTd.prepend($message);

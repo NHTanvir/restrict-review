@@ -58,61 +58,46 @@ class User_Specific_Review {
      * @return bool
      */
     public function check( $source = 'post', $user_data = [] ) {
-
-        if ( empty( $user_data ) ) {
+        if ( empty( $_COOKIE['submission_id'] ) ) {
             return false; 
         }
+    
         global $wpdb;
-        $source_instance    = jet_reviews()->reviews_manager->sources->get_source_instance( $source );
-        $source_id          = $source_instance->get_current_id();
-        $user_id            = $user_data['id'];
-        $post_id            = get_the_ID();
-        $post_user_id       = get_post_meta( $post_id, 'user_id', true );
-        $table_name         = $wpdb->prefix . 'trade_job_submission';
-
-        $completed_jobs_query = $wpdb->prepare(
-            "SELECT COUNT(*) 
-             FROM $table_name 
-             WHERE user_id = %d 
-             AND author_id = %d 
-             AND status = %s",
-            $post_user_id, 
-            $user_id,
-            'complete'
-        );
-        
-        $completed_jobs_query_2 = $wpdb->prepare(
-            "SELECT COUNT(DISTINCT post_id) 
-             FROM $table_name 
-             WHERE user_id = %d 
-             AND author_id = %d 
-             AND status = %s",
-            $user_id, 
-            $post_user_id,
-            'complete'
-        );
-        
-        $completed_jobs_count   = $wpdb->get_var($completed_jobs_query);
-        $completed_jobs_count2  = $wpdb->get_var($completed_jobs_query_2);
-        $reviews_table          = jet_reviews()->db->tables( 'reviews', 'name' );
     
-        $reviews_query = $wpdb->prepare(
-            "SELECT COUNT(*) FROM $reviews_table WHERE source = %s AND post_id = %s AND author = %s AND approved = 1",
-            $source,
-            $source_id,
-            $user_id
-        );
+        $submission_id  = intval( $_COOKIE['submission_id'] ); 
+        $table_name     = $wpdb->prefix . 'trade_job_submission';
+        $required_roles = [ 'tradesman', '1-day-membership', '1-week-plan', '1-month-plan' ];
+        $current_user   = wp_get_current_user(); 
+        $user_match     = null;
+        $author_match   = null;
     
-        $submitted_reviews_count = $wpdb->get_var( $reviews_query );
-
-        if ( $completed_jobs_count > $submitted_reviews_count ) {
-            return true;
+        if ( array_intersect( $required_roles, $current_user->roles ) ) {
+            $user_match = $wpdb->get_var(
+                $wpdb->prepare(
+                    "SELECT id FROM $table_name 
+                    WHERE id = %d 
+                    AND user_id = %d 
+                    AND user_review = 0
+                    AND status = 'complete'",
+                    $submission_id, get_current_user_id()
+                )
+            );
         }
-        if ( $completed_jobs_count2 > $submitted_reviews_count ) {
-            return true;
+   
+        if ( current_user_can( 'client' ) ) {
+            $author_match = $wpdb->get_var(
+                $wpdb->prepare(
+                    "SELECT id FROM $table_name 
+                    WHERE id = %d 
+                    AND author_id = %d 
+                    AND author_review = 0
+                    AND status = 'complete'",
+                    $submission_id, get_current_user_id()
+                )
+            );
         }
-    
-        return false; 
+
+        return ! empty( $user_match ) || ! empty( $author_match );
     }
     
 }
