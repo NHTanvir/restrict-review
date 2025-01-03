@@ -47,12 +47,9 @@ $total_results = $wpdb->get_var($wpdb->prepare("
     WHERE " . implode(' AND ', $where_clauses), $params)); // Use prepare with params
 
 // Prepare and execute the final query
-$query = $wpdb->prepare($query, $params);
-$results = $wpdb->get_results($query);
-
-
-
-$notification_table = $wpdb->prefix . 'trade_notifications';
+$query               = $wpdb->prepare($query, $params);
+$results             = $wpdb->get_results($query);
+$notification_table  = $wpdb->prefix . 'trade_notifications';
 
 // List of types you want to match
 $types = ['complete', 'hired', 'closed'];  
