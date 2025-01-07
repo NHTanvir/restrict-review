@@ -9,7 +9,7 @@ jQuery(function ($) {
     $(document).ready(function () {
 
         $('#tradesman_Email').before(
-              '<div id="emailPopup" style="position: absolute; top: -40px; left: -150px; background: #f8d7da; color: #721c24; padding: 5px 10px; border: 1px solid #f5c6cb; border-radius: 3px;">This field is readonly.</div>'
+              '<div id="emailPopup" style="position: absolute; top: -40px; left: -150px; background: #f8d7da; color: #721c24; padding: 5px 10px; border: 1px solid #f5c6cb; border-radius: 3px;">This field is read only.</div>'
         );
         
         $('#tradesman_Email').prop('readonly', true);
