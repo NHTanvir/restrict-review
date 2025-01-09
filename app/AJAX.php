@@ -88,28 +88,28 @@ class AJAX extends Base {
 			]
 		);
 		// Return a JSON response
-		if ( $inserted ) {
+		if ($inserted) {
 			wp_send_json_success('Your request has been submitted successfully!');
 		} else {
-			wp_send_json_error( 'Failed to submit your request. Please try again.' );
+			wp_send_json_error('Failed to submit your request. Please try again.');
 		}
 	
 		wp_die(); 
 	}
 
 	public function update_job_status() {
-		if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'] ) ) {
-			wp_send_json_error( 'Invalid nonce verification' );
+		if ( ! isset($_POST['_wpnonce']) || ! wp_verify_nonce($_POST['_wpnonce']) ) {
+			wp_send_json_error('Invalid nonce verification');
 			wp_die();
 		}
 	
 		global $wpdb;
 	
-		$row_id     		= intval( $_POST['job_id'] );
+		$row_id     		= intval($_POST['job_id']);
 		$job_status 		= sanitize_text_field( $_POST['job_status'] );
 		$table_name 		= $wpdb->prefix . 'trade_job_submission';
 		$notification_table = $wpdb->prefix . 'trade_notifications';
-		$job_data 			= $wpdb->get_row( 
+		$job_data = $wpdb->get_row( 
 			$wpdb->prepare( 
 				"SELECT post_id, user_id, author_id, status 
 				 FROM {$table_name} 
@@ -136,6 +136,7 @@ class AJAX extends Base {
 				$row_id
 			)
 		);
+
 	
 		if ( $existing_job_status > 0 ) {
 			wp_send_json_success( [
@@ -152,7 +153,9 @@ class AJAX extends Base {
 					array( '%d' )
 				);
 
-		if ( $job_status === 'hired' || $job_status === 'complete' ) {
+
+
+		if ($job_status === 'hired' || $job_status === 'complete') {
 			$wpdb->query(
 				$wpdb->prepare(
 					"UPDATE $table_name 
@@ -191,10 +194,10 @@ class AJAX extends Base {
 
 		if ( $job_status === 'hired' ) {
 			$post = array(
-				'ID' 			=> $job_id,
-				'post_status' 	=> 'private',
+				'ID' => $job_id,
+				'post_status' => 'private',
 			);
-			wp_update_post( $post );
+			wp_update_post($post);
 
 			$existing_notification = $wpdb->get_var(
 				$wpdb->prepare(
@@ -224,9 +227,9 @@ class AJAX extends Base {
 				)
 			);
 
-			$user_email 		= get_the_author_meta( 'user_email', $user_id );
-			$post_title 		= get_the_title( $job_id );
-			$client_name 		= get_the_author_meta( 'display_name', $author_id );
+			$user_email 		= get_the_author_meta('user_email', $user_id);
+			$post_title 		= get_the_title($job_id);
+			$client_name 		= get_the_author_meta('display_name', $author_id);
 			$email_description 	= "We are excited to inform you that you have been selected for the job. Please feel free to reach out to your client for further discussions or check your Tradie Dashboard for updates.";
 			$subject 			= 'You Are Hired!';
 			$message 			= "
@@ -240,27 +243,27 @@ class AJAX extends Base {
 				<p>To ensure you get the latest updates on your job, check in on your Need A Tradie Dashboard regularly and please remember to check your junk email folder and mark your Need A Tradie emails as safe.</p>
 			";
 		
-			$message = str_replace( '&nbsp;', ' ', $message );
-			if ( ! empty( $user_email ) ) {
-				wp_mail( $user_email, $subject, $message, array( 'Content-Type: text/html; charset=UTF-8' ) );
+			$message = str_replace('&nbsp;', ' ', $message);
+			if (!empty($user_email)) {
+				wp_mail($user_email, $subject, $message, array('Content-Type: text/html; charset=UTF-8'));
 			}
 		}
 		
-		if ( $job_status === 'complete' ) {
+		if ($job_status === 'complete') {
 			$post = array(
-				'ID' 			=> $job_id,
-				'post_status' 	=> 'private',
+				'ID' => $job_id,
+				'post_status' => 'private',
 			);
 		
-			wp_update_post( $post );
+			wp_update_post($post);
 
-			$wpdb->insert( $notification_table, array(
+			$wpdb->insert($notification_table, array(
 				'user_id' 		 => $user_id,
 				'job_id' 		 => $job_id,
 				'submission_id'  => $row_id,
 				'type' 			 => 'complete',
 				'viewed' 		 => 0,
-			) );
+			));
 
 			// Check and replace for the user
 			$exists_query = $wpdb->prepare(
@@ -273,7 +276,7 @@ class AJAX extends Base {
 			);
 
 			// Delete the existing record, if any
-			if ( $wpdb->get_var( $exists_query ) > 0 ) {
+			if ($wpdb->get_var($exists_query) > 0) {
 					$wpdb->delete(
 						$notification_table,
 						array(
@@ -310,7 +313,7 @@ class AJAX extends Base {
 			);
 
 			// Delete the existing record, if any
-			if ( $wpdb->get_var( $exists_query_author ) > 0 ) {
+			if ($wpdb->get_var($exists_query_author) > 0) {
 				$wpdb->delete(
 					$notification_table,
 					array(
@@ -337,11 +340,12 @@ class AJAX extends Base {
 			);
 
 
-			$author_email 		= get_the_author_meta( 'user_email', $author_id );
-			$post_title   		= get_the_title( $job_id );
-			$tradesperson_name 	= get_the_author_meta( 'display_name', $user_id );
-			$subject 			= 'Job Completion - Review Request';
-			$message_to_client 	= "
+			$author_email = get_the_author_meta('user_email', $author_id);
+			$post_title   = get_the_title($job_id);
+			$tradesperson_name = get_the_author_meta('display_name', $user_id);
+
+			$subject = 'Job Completion - Review Request';
+			$message_to_client = "
 				<p>Thank you for using Need A Tradie!</p>
 				<p>Your job <strong>{$post_title}</strong> has been successfully completed by <strong>{$tradesperson_name}</strong>.</p>
 				<strong>How was your experience?</strong>
@@ -351,17 +355,18 @@ class AJAX extends Base {
 				<p>To ensure you get the latest updates on your job, check in on your Need A Tradie Dashboard regularly and please remember to check your junk email folder and mark your Need A Tradie emails as safe.</p>
 			";
 
-			$message_to_client = str_replace( '&nbsp;', ' ', $message_to_client );
+			$message_to_client = str_replace('&nbsp;', ' ', $message_to_client);
 
-			if ( ! empty( $author_email ) ) {
-				wp_mail( $author_email, $subject, $message_to_client, array( 'Content-Type: text/html; charset=UTF-8') );
+			if (!empty($author_email)) {
+				wp_mail($author_email, $subject, $message_to_client, array('Content-Type: text/html; charset=UTF-8'));
 			}
 
-			$user_email 				= get_the_author_meta( 'user_email', $user_id );
-			$post_title 				= get_the_title( $job_id );
-			$client_name 				= get_the_author_meta( 'display_name', $author_id );
-			$subject 					= 'Job Completion - Confirmation';
-			$message_to_tradesperson 	= "
+			$user_email 	= get_the_author_meta('user_email', $user_id);
+			$post_title 	= get_the_title($job_id);
+			$client_name 	= get_the_author_meta('display_name', $author_id);
+
+			$subject = 'Job Completion - Confirmation';
+			$message_to_tradesperson = "
 				<p>Congratulations on completing the job <strong>{$post_title}</strong>!</p>
 				<strong>Client Name:</strong>
 				<p>{$client_name}</p>
@@ -372,9 +377,9 @@ class AJAX extends Base {
 				<p>To ensure you get the latest updates on your job, check in on your Need A Tradie Dashboard regularly and please remember to check your junk email folder and mark your Need A Tradie emails as safe.</p>
 			";
 
-			$message_to_tradesperson 	= str_replace('&nbsp;', ' ', $message_to_tradesperson);
-			if ( ! empty( $user_email ) ) {
-				wp_mail( $user_email, $subject, $message_to_tradesperson, array( 'Content-Type: text/html; charset=UTF-8' ) );
+			$message_to_tradesperson = str_replace('&nbsp;', ' ', $message_to_tradesperson);
+			if (!empty($user_email)) {
+				wp_mail($user_email, $subject, $message_to_tradesperson, array('Content-Type: text/html; charset=UTF-8'));
 			}
 		}
 			
@@ -384,6 +389,15 @@ class AJAX extends Base {
 				'post_status'  => 'publish'
 			);
 		
+			wp_update_post( $post );
+		}
+
+		if( $job_status == 'closed') {
+			$post = array(
+				'ID' 			=> $job_id,
+				'post_status' 	=> 'private',
+			);
+
 			wp_update_post( $post );
 		}
 
