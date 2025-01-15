@@ -149,17 +149,15 @@ jQuery(function ($) {
                     var $message = $(
                         '<span class="review-message">Click username to give Review</span>'
                     ).css({
-                        position: "absolute",
-                        right: "10px",
-                        zIndex: "10",
+                        display: "block",
                         backgroundColor: "#ff0000",
                         color: "white",
                         padding: "2px 5px",
                         borderRadius: "5px",
-                        top : "-12px"
+                        textAlign : 'center'
                     });
 
-                    $secondTd.prepend($message);
+                    $secondTd.append($message);
                 }
             });
         }
