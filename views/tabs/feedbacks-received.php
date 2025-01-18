@@ -55,7 +55,34 @@ foreach ( $results as $row ) {
     $user       = get_user_by('ID', $user_id);
     $username   = $user->user_login;
     $user_url   = get_permalink( $row->post_id );
-    
+
+    $sql = "
+        SELECT id, post_id
+        FROM {$wpdb->prefix}trade_job_submission
+        WHERE (
+            (user_id = %d AND author_id = %d)  -- Check if current user_id matches author_id
+            OR 
+            (user_id = %d AND author_id = %d)  -- Check if variation user_id matches author_id
+            OR
+            (user_id = %d AND author_id = %d)  -- Check if current user_id matches with variation user_id as author_id
+            OR 
+            (user_id = %d AND author_id = %d)  -- Check if both match for user_id and author_id
+        )
+        ORDER BY created_at DESC  -- Order by creation date (latest first)
+        LIMIT 1  -- Get only the latest match
+    ";
+
+    $query = $wpdb->prepare(
+        $sql,
+        $current_user_id, $current_user_id,
+        $user_id, $current_user_id,
+        $current_user_id, $user_id,
+        $user_id, $user_id
+    );
+
+    $latest_match       = $wpdb->get_row($query);
+    $submission_id      = $latest_match->id;
+    $job_id             = $latest_match->post_id;
 
     $query = $wpdb->prepare("
         SELECT posts.ID 
@@ -73,7 +100,7 @@ foreach ( $results as $row ) {
     ?>
     <table class="feedback-received-table" border="1" cellpadding="10" cellspacing="0">
         <tbody>
-            <tr>
+        <tr data-review-id="<?php echo esc_attr($job_id); ?>" data-submission-id="<?php echo esc_attr($submission_id); ?>">
                 <td>Author</td>
                 <td>
                     <?php if ($user_url): ?>

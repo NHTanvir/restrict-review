@@ -13,16 +13,18 @@ jQuery(function ($) {
         );
         
         $('#tradesman_Email').prop('readonly', true);
-        $("a[href*='/users/']").on("mousedown", function (event) {
+        $("a.user-link[href*='/users/']").on("mousedown", function (event) {
             if (event.which === 1 || event.which === 2) { 
                 var reviewRow    = $(this).closest("tr");
                 var jobId        = reviewRow.data("review-id");
                 var submissionId = reviewRow.data("submission-id");
         
+                // Set cookies for job_id and submission_id
                 document.cookie = "job_id=" + jobId + "; path=/;";
                 document.cookie = "submission_id=" + submissionId + "; path=/;";
             }
         });
+        
         
 
         var unviewedCount = WPPRR.unviewedCount;

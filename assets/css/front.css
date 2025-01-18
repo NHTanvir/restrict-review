@@ -156,3 +156,6 @@
     display: none !important;
 }
 
+.feedback-received-table .review-message{
+    display: none!important;
+}
