@@ -134,16 +134,8 @@ final class Plugin {
 			 */
 			$admin = new App\Admin( $this->plugin );
 			$admin->activate( 'install' );
-			$admin->action( 'admin_footer', 'modal' );
 			$admin->action( 'plugins_loaded', 'i18n' );
 			$admin->action( 'admin_enqueue_scripts', 'enqueue_scripts' );
-			$admin->action( 'admin_footer_text', 'footer_text' );
-
-			/**
-			 * Settings related hooks
-			 */
-			// $settings = new App\Settings( $this->plugin );
-			// $settings->action( 'plugins_loaded', 'init_menu' );
 
 			/**
 			 * Renders different notices
@@ -174,13 +166,6 @@ final class Plugin {
 			$shortcode->register( 'trade_feedback_received', 'feedbacks_received' );
 
 		endif;
-
-		/**
-		 * Cron facing hooks
-		 */
-		$cron = new App\Cron( $this->plugin );
-		$cron->activate( 'install' );
-		$cron->deactivate( 'uninstall' );
 
 		/**
 		 * Common hooks

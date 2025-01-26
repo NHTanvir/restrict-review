@@ -113,17 +113,4 @@ class Admin extends Base {
 
 		wp_enqueue_script( $this->slug, plugins_url( "/assets/js/admin{$min}.js", WPPRR ), [ 'jquery' ], $this->version, true );
 	}
-
-	public function footer_text( $text ) {
-		if( get_current_screen()->parent_base != $this->slug ) return $text;
-
-		return sprintf( __( 'Built with %1$s by the folks at <a href="%2$s" target="_blank">Codexpert, Inc</a>.' ), '&hearts;', 'https://codexpert.io' );
-	}
-
-	public function modal() {
-		echo '
-		<div id="plugin-client-modal" style="display: none">
-			<img id="plugin-client-modal-loader" src="' . esc_attr( WPPRR_ASSET . '/img/loader.gif' ) . '" />
-		</div>';
-	}
 }
