@@ -189,7 +189,6 @@ final class Plugin {
 		 */
 		$common = new App\Common( $this->plugin );
 		$common->action( 'jet-reviews/user/conditions/register', 'register_custom_conditions' );
-		$common->action( 'user_register', 'my_custom_user_registration_action');
 
 		/**
 		 * AJAX related hooks
