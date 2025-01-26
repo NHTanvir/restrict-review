@@ -102,15 +102,4 @@ class Admin extends Base {
 			update_option( 'plugin-client_install_time', time() );
 		}
 	}
-
-	/**
-	 * Enqueue JavaScripts and stylesheets
-	 */
-	public function enqueue_scripts() {
-		$min = defined( 'WPPRR_DEBUG' ) && WPPRR_DEBUG ? '' : '.min';
-		
-		wp_enqueue_style( $this->slug, plugins_url( "/assets/css/admin{$min}.css", WPPRR ), '', $this->version, 'all' );
-
-		wp_enqueue_script( $this->slug, plugins_url( "/assets/js/admin{$min}.js", WPPRR ), [ 'jquery' ], $this->version, true );
-	}
 }

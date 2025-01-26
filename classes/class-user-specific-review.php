@@ -99,5 +99,4 @@ class User_Specific_Review {
 
         return ! empty( $user_match ) || ! empty( $author_match );
     }
-    
 }
