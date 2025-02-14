@@ -35,7 +35,7 @@ $table_name = $wpdb->prefix . 'jet_reviews';
 $placeholders = implode(',', array_fill(0, count($post_ids), '%d')); // Prepare the placeholders for IN query
 
 $query = "
-    SELECT post_id,author, title, content, rating, date
+    SELECT *
     FROM $table_name
     WHERE post_id IN ($placeholders)
     ORDER BY date DESC
@@ -51,38 +51,25 @@ if ( empty( $results ) ) {
 foreach ( $results as $row ) {
 
     global $wpdb;
-    $user_id    = $row->author;
-    $user       = get_user_by('ID', $user_id);
-    $username   = $user->user_login;
-    $user_url   = get_permalink( $row->post_id );
-
-    $sql = "
-        SELECT id, post_id
-        FROM {$wpdb->prefix}trade_job_submission
-        WHERE (
-            (user_id = %d AND author_id = %d)  -- Check if current user_id matches author_id
-            OR 
-            (user_id = %d AND author_id = %d)  -- Check if variation user_id matches author_id
-            OR
-            (user_id = %d AND author_id = %d)  -- Check if current user_id matches with variation user_id as author_id
-            OR 
-            (user_id = %d AND author_id = %d)  -- Check if both match for user_id and author_id
+    $review_id          = $row->id;
+    $user_id            = $row->author;
+    $user               = get_user_by('ID', $user_id);
+    $username           = $user->user_login;
+    $user_url           = get_permalink( $row->post_id );
+    $job_id             = $row->post_id;
+    $submission_id = $wpdb->get_var(
+        $wpdb->prepare(
+            "SELECT meta_value FROM {$wpdb->prefix}jet_review_meta WHERE review_id = %d AND meta_key = 'submission_id'",
+            $review_id
         )
-        ORDER BY created_at DESC  -- Order by creation date (latest first)
-        LIMIT 1  -- Get only the latest match
-    ";
-
-    $query = $wpdb->prepare(
-        $sql,
-        $current_user_id, $current_user_id,
-        $user_id, $current_user_id,
-        $current_user_id, $user_id,
-        $user_id, $user_id
     );
 
-    $latest_match       = $wpdb->get_row($query);
-    $submission_id      = $latest_match->id;
-    $job_id             = $latest_match->post_id;
+    $job_id = $wpdb->get_var(
+        $wpdb->prepare(
+            "SELECT meta_value FROM {$wpdb->prefix}jet_review_meta WHERE review_id = %d AND meta_key = 'job_id'",
+            $review_id
+        )
+    );
 
     $query = $wpdb->prepare("
         SELECT posts.ID 

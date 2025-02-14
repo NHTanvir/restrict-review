@@ -56,10 +56,10 @@ class AJAX extends Base {
 		$post_id 			= intval( $_POST['post_id'] );
 		$author_id  		= get_post_field('post_author', $post_id);
 		$user_id 			= get_current_user_id();
-		$table_name 		= $wpdb->prefix . 'trade_job_submission';
+		$job_submission_table 		= $wpdb->prefix . 'trade_job_submission';
 	
 		$inserted = $wpdb->insert(
-			$table_name,
+			$job_submission_table,
 			[
 				'post_id'         => $post_id,
 				'author_id'       => $author_id,
@@ -105,14 +105,14 @@ class AJAX extends Base {
 	
 		global $wpdb;
 	
-		$row_id     		= intval($_POST['job_id']);
-		$job_status 		= sanitize_text_field( $_POST['job_status'] );
-		$table_name 		= $wpdb->prefix . 'trade_job_submission';
-		$notification_table = $wpdb->prefix . 'trade_notifications';
+		$row_id     			= intval($_POST['job_id']);
+		$job_status 			= sanitize_text_field( $_POST['job_status'] );
+		$job_submission_table 	= $wpdb->prefix . 'trade_job_submission';
+		$notification_table 	= $wpdb->prefix . 'trade_notifications';
 		$job_data = $wpdb->get_row( 
 			$wpdb->prepare( 
 				"SELECT post_id, user_id, author_id, status 
-				 FROM {$table_name} 
+				 FROM {$job_submission_table} 
 				 WHERE id = %d", 
 				$row_id 
 			), 
@@ -126,7 +126,7 @@ class AJAX extends Base {
 		$existing_job_status = $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT COUNT(*) 
-				 FROM {$table_name} 
+				 FROM {$job_submission_table} 
 				 WHERE post_id = %d 
 				   AND status IN (%s, %s) 
 				   AND id != %d",
@@ -146,7 +146,7 @@ class AJAX extends Base {
 		}
 
 		$updated = $wpdb->update(
-					$table_name,
+					$job_submission_table,
 					array( 'status' => $job_status ),
 					array( 'id' => $row_id ),
 					array( '%s' ),
@@ -158,7 +158,7 @@ class AJAX extends Base {
 		if ( $job_status === 'hired' || $job_status === 'complete' ||  $job_status == 'closed' ) {
 			$wpdb->query(
 				$wpdb->prepare(
-					"UPDATE $table_name 
+					"UPDATE $job_submission_table 
 						SET status = %s 
 						WHERE post_id = %d AND id != %d",
 					'closed',
@@ -169,7 +169,7 @@ class AJAX extends Base {
 	
 			$updated_rows = $wpdb->get_results(
 				$wpdb->prepare(
-					"SELECT id, user_id FROM $table_name 
+					"SELECT id, user_id FROM $job_submission_table 
 					WHERE post_id = %d AND id != %d AND status = %s",
 					$job_id,
 					$row_id,
@@ -390,9 +390,27 @@ class AJAX extends Base {
 			);
 		
 			wp_update_post( $post );
+
+			$wpdb->update(
+				$job_submission_table,
+				array( 'status' 	=> 'hiring' ),
+				array( 'post_id'	=> $job_id ),
+				array( '%s' ),
+				array( '%d' )
+			);
 		}
 
 		if( $job_status == 'closed') {
+			$wpdb->insert(
+				$notification_table,
+				array(
+					'user_id'        => $user_id, 
+					'job_id'         => $job_id,
+					'submission_id'  => $row_id, 
+					'type'           => 'closed', 
+					'viewed'         => 0,  
+				)
+			);
 			$post = array(
 				'ID' 			=> $job_id,
 				'post_status' 	=> 'private',
