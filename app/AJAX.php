@@ -155,7 +155,7 @@ class AJAX extends Base {
 
 
 
-		if ($job_status === 'hired' || $job_status === 'complete') {
+		if ( $job_status === 'hired' || $job_status === 'complete' ||  $job_status == 'closed' ) {
 			$wpdb->query(
 				$wpdb->prepare(
 					"UPDATE $table_name 
