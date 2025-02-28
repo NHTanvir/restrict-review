@@ -257,13 +257,6 @@ class AJAX extends Base {
 		
 			wp_update_post($post);
 
-			$wpdb->insert($notification_table, array(
-				'user_id' 		 => $user_id,
-				'job_id' 		 => $job_id,
-				'submission_id'  => $row_id,
-				'type' 			 => 'complete',
-				'viewed' 		 => 0,
-			));
 
 			// Check and replace for the user
 			$exists_query = $wpdb->prepare(

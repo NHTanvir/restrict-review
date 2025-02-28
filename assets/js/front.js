@@ -13,13 +13,11 @@ jQuery(function ($) {
         );
         
         $('#tradesman_Email').prop('readonly', true);
-        $("a.user-link[href*='/users/']").on("mousedown", function (event) {
+        $(document).on("mousedown", "a.user-link[href*='/users/']", function (event) {
             if (event.which === 1 || event.which === 2) { 
                 var reviewRow    = $(this).closest("tr");
                 var jobId        = reviewRow.data("review-id");
                 var submissionId = reviewRow.data("submission-id");
-        
-                // Set cookies for job_id and submission_id
                 document.cookie = "job_id=" + jobId + "; path=/;";
                 document.cookie = "submission_id=" + submissionId + "; path=/;";
             }
@@ -124,21 +122,25 @@ jQuery(function ($) {
 
         if (WPPRR.unreviewedJobs && WPPRR.unreviewedJobs.length) {
             var ReviewMenu;
-
+            totalNotifications = 0;
+            totalNotifications += parseInt( WPPRR.unreviewedJobs.length );
             if (WPPRR.is_client == 1) {
+                totalNotifications += parseInt( WPPRR.unviewedCount );
                 ReviewMenu = $(
                     '.jet-profile-menu__item-link[href="https://needatradie.co.uk/dashboard/Quotations/"]'
                 );
+                console.log( 'totalNotifications2', totalNotifications  );
             } else {
+                totalNotifications += parseInt( WPPRR.unviewedHiresComplete );
                 ReviewMenu = $(
                     '.jet-profile-menu__item-link[href="https://needatradie.co.uk/dashboard/Applications/"]'
                 );
             }
             
 
-            if (WPPRR.unreviewedJobs.length) {
+            if (totalNotifications) {
                 ReviewMenu.css("position", "relative");
-                ReviewMenu.attr("data-count", WPPRR.unreviewedJobs.length);
+                ReviewMenu.attr("data-count", totalNotifications);
                 ReviewMenu.removeClass("hide-unviewed-count");
             } else {
                 ReviewMenu.addClass("hide-unviewed-count");

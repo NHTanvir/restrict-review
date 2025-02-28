@@ -140,7 +140,7 @@ foreach ($results as $row) {
             <td>Author Name</td>
             <td>
                 <?php if ($user_url): ?>
-                    <a href="<?php echo esc_url($user_url); ?>">
+                    <a class="user-link" href="<?php echo esc_url($user_url); ?>">
                         <?php echo esc_html($author_name); ?>
                     </a>
                 <?php else: ?>
