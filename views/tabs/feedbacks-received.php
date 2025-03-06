@@ -91,7 +91,7 @@ foreach ( $results as $row ) {
                 <td>Author</td>
                 <td>
                     <?php if ($user_url): ?>
-                        <a href="<?php echo esc_url($user_url); ?>" target="_blank">
+                        <a class="user-link" href="<?php echo esc_url($user_url); ?>" target="_blank">
                             <?php echo esc_html($username); ?>
                         </a>
                     <?php else: ?>
